@@ -1,0 +1,4 @@
+networkx>=3.2
+pytest>=8.0
+matplotlib>=3.8
+flask>=3.0

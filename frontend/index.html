@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NetCascade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+  <div id="device-symbols"></div>
+
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#overview" aria-label="NetCascade overview">
+        <span class="brand-logo" id="brand-logo"></span>
+        <span class="brand-text"><strong>NetCascade</strong><small>Network Resilience Analyzer</small></span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#overview" data-page="overview" class="nav-item"><span data-icon="home"></span>Overview</a>
+        <a href="#topology" data-page="topology" class="nav-item"><span data-icon="topology"></span>Topology</a>
+        <a href="#scenarios" data-page="scenarios" class="nav-item"><span data-icon="scenarios"></span>Scenarios</a>
+      </nav>
+      <div class="sidebar-clip">
+      <svg class="sidebar-waves" viewBox="0 0 224 420" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="wave-a" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#d9e9ff"/><stop offset="1" stop-color="#8fbaf5"/>
+          </linearGradient>
+          <linearGradient id="wave-b" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#b9d5fb"/><stop offset="1" stop-color="#4f8fe8"/>
+          </linearGradient>
+          <linearGradient id="wave-c" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#8db8f2"/><stop offset="1" stop-color="#2f6fd6"/>
+          </linearGradient>
+        </defs>
+        <path d="M0 60 C 70 20, 150 40, 224 0 V420 H0Z" fill="url(#wave-a)" opacity=".55"/>
+        <path d="M0 150 C 80 90, 140 170, 224 110 V420 H0Z" fill="url(#wave-b)" opacity=".55"/>
+        <path d="M0 250 C 60 200, 150 270, 224 210 V420 H0Z" fill="url(#wave-c)" opacity=".55"/>
+        <g fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1">
+          <path d="M0 95 C 70 55, 150 75, 224 35"/>
+          <path d="M0 190 C 80 130, 140 210, 224 150"/>
+          <path d="M0 300 C 60 250, 150 320, 224 260"/>
+          <path d="M0 340 C 60 300, 150 360, 224 310"/>
+        </g>
+      </svg>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="search" id="search">
+          <span data-icon="search" class="search-icon"></span>
+          <input id="search-input" type="search" placeholder="Search devices, links or scenarios..." autocomplete="off"
+                 aria-label="Search devices, links or scenarios" aria-controls="search-results" aria-expanded="false">
+          <kbd>⌘ K</kbd>
+          <div class="search-results" id="search-results" role="listbox" hidden></div>
+        </div>
+      </header>
+
+      <main class="page" id="page-overview">
+        <div class="page-head">
+          <div>
+            <h1>Overview</h1>
+            <p>Design and manage your network topology. Switch between basic and redundant modes.</p>
+          </div>
+          <div class="segmented" role="tablist" aria-label="Network mode">
+            <button role="tab" data-mode="basic">Basic Network</button>
+            <button role="tab" data-mode="redundant">Redundant Network</button>
+          </div>
+        </div>
+
+        <section class="cards" aria-label="Summary">
+          <article class="card">
+            <span class="card-icon blue" data-icon="monitor" data-size="30"></span>
+            <div><div class="card-num" data-bind="c-devices">–</div><div class="card-label">Devices</div><div class="card-sub" data-bind="c-devices-sub">&nbsp;</div></div>
+          </article>
+          <article class="card">
+            <span class="card-icon purple" data-icon="link" data-size="30"></span>
+            <div><div class="card-num" data-bind="c-links">–</div><div class="card-label">Links</div><div class="card-sub" data-bind="c-links-sub">&nbsp;</div></div>
+          </article>
+          <article class="card">
+            <span class="card-icon green" data-bind="c-conn-icon"></span>
+            <div><div class="card-title" data-bind="c-conn">–</div><div class="card-sub" data-bind="c-conn-sub">&nbsp;</div></div>
+          </article>
+          <article class="card">
+            <span class="card-icon blue" data-icon="topology" data-size="30"></span>
+            <div><div class="card-title" data-bind="c-net">–</div><div class="card-sub" data-bind="c-net-sub">&nbsp;</div></div>
+          </article>
+        </section>
+
+        <section class="workspace">
+          <aside class="panel palette" id="palette">
+            <div class="palette-head">
+              <div><h2>Add Device</h2><p>Drag a device onto the canvas.</p></div>
+              <button class="icon-btn subtle" id="palette-toggle" title="Collapse palette" aria-label="Collapse palette"><span data-icon="x" data-size="16"></span></button>
+            </div>
+            <div class="palette-list" id="palette-list"></div>
+          </aside>
+
+          <section class="panel canvas-panel">
+            <div class="toolbar" role="toolbar" aria-label="Topology tools">
+              <div class="tool-group">
+                <button class="tool active" data-tool="select" title="Select (V)" aria-label="Select"><span data-icon="pointer"></span></button>
+                <button class="tool" data-tool="link" title="Add link (L)" aria-label="Add link"><span data-icon="link"></span></button>
+                <button class="tool" data-action="edit" title="Edit selected" aria-label="Edit selected"><span data-icon="pencil"></span></button>
+                <button class="tool danger" data-action="delete" title="Delete selected (Del)" aria-label="Delete selected"><span data-icon="trash"></span></button>
+              </div>
+              <div class="tool-group">
+                <button class="tool" data-action="undo" title="Undo (⌘Z)" aria-label="Undo" disabled><span data-icon="undo"></span></button>
+                <button class="tool" data-action="redo" title="Redo (⇧⌘Z)" aria-label="Redo" disabled><span data-icon="redo"></span></button>
+              </div>
+              <button class="tool wide" data-action="layout" title="Auto layout"><span data-icon="layout"></span>Auto Layout</button>
+              <div class="tool-group zoom">
+                <button class="tool" data-action="zoom-out" title="Zoom out" aria-label="Zoom out"><span data-icon="minus"></span></button>
+                <span class="zoom-val" data-bind="zoom">100%</span>
+                <button class="tool" data-action="zoom-in" title="Zoom in" aria-label="Zoom in"><span data-icon="plus"></span></button>
+              </div>
+              <button class="tool" data-action="fit" title="Fit to screen" aria-label="Fit to screen"><span data-icon="fit"></span></button>
+            </div>
+            <div class="canvas" id="canvas">
+              <div class="canvas-hint" data-bind="canvas-hint" hidden></div>
+              <div class="canvas-empty" data-bind="canvas-empty" hidden>
+                <strong>This topology is empty</strong>
+                <span>Drag a PC, switch, router or server from the palette to start.</span>
+              </div>
+            </div>
+          </section>
+
+          <aside class="panel info" id="info" aria-live="polite"></aside>
+        </section>
+      </main>
+
+      <main class="page page-topology" id="page-topology" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Topology</h1>
+            <p>Simulate component failures and analyse their impact on the network.</p>
+          </div>
+          <div class="segmented" role="tablist" aria-label="Network mode">
+            <button role="tab" data-mode="basic">Basic Network</button>
+            <button role="tab" data-mode="redundant">Redundant Network</button>
+          </div>
+        </div>
+
+        <section class="cards" aria-label="Summary">
+          <article class="card">
+            <span class="card-icon blue" data-icon="monitor" data-size="30"></span>
+            <div><div class="card-num" data-bind="c-devices">–</div><div class="card-label">Devices</div><div class="card-sub" data-bind="c-devices-sub">&nbsp;</div></div>
+          </article>
+          <article class="card">
+            <span class="card-icon blue" data-icon="link" data-size="30"></span>
+            <div><div class="card-num" data-bind="c-links">–</div><div class="card-label">Links</div><div class="card-sub" data-bind="c-links-sub">&nbsp;</div></div>
+          </article>
+          <article class="card">
+            <span class="card-icon green" data-bind="c-conn-icon"></span>
+            <div><div class="card-title" data-bind="c-conn">–</div><div class="card-sub" data-bind="c-conn-sub">&nbsp;</div></div>
+          </article>
+          <article class="card">
+            <span class="card-icon blue" data-icon="topology" data-size="30"></span>
+            <div><div class="card-title" data-bind="c-net">–</div><div class="card-sub" data-bind="c-net-sub">&nbsp;</div></div>
+          </article>
+        </section>
+
+        <section class="topo-grid">
+          <aside class="panel control-panel" aria-label="Tools and devices">
+            <div class="cp-head"><h2>Select &amp; Simulate</h2><span class="cp-info" data-icon="info" data-size="17" title="Select or link devices, or pick a device or link to simulate its failure. Simulations never change the saved topology."></span></div>
+            <div class="cp-tools">
+              <button class="cp-tool active" data-tool="select"><span data-icon="pointer" data-size="18"></span>Select</button>
+              <button class="cp-tool" data-tool="link"><span data-icon="link" data-size="18"></span>Add Link</button>
+              <button class="cp-tool sim" data-sim="device" data-tool-sim="fail-device"><span data-icon="alert" data-size="18"></span>Simulate Device Failure</button>
+              <button class="cp-tool sim" data-sim="link" data-tool-sim="fail-link"><span data-icon="linkoff" data-size="18"></span>Simulate Link Failure</button>
+              <button class="cp-tool" data-sim="reset" disabled><span data-icon="restore" data-size="18"></span>Reset Simulation</button>
+            </div>
+            <div class="cp-divider"></div>
+            <h2 class="cp-sub">Add Device</h2>
+            <p class="cp-note">Drag a device onto the canvas.</p>
+            <div class="palette-list compact"></div>
+          </aside>
+
+          <section class="panel canvas-panel topo-canvas-panel">
+            <div class="toolbar" role="toolbar" aria-label="Canvas tools">
+              <button class="tool wide" data-action="layout" title="Auto layout"><span data-icon="layout"></span>Auto Layout</button>
+              <div class="tool-group zoom">
+                <button class="tool" data-action="zoom-out" title="Zoom out" aria-label="Zoom out"><span data-icon="minus"></span></button>
+                <span class="zoom-val" data-bind="zoom">100%</span>
+                <button class="tool" data-action="zoom-in" title="Zoom in" aria-label="Zoom in"><span data-icon="plus"></span></button>
+              </div>
+              <button class="tool" data-action="fullscreen" title="Full screen" aria-label="Toggle full screen"><span data-icon="fit"></span></button>
+              <button class="tool wide" data-action="fit" title="Fit to screen"><span data-icon="fitscreen"></span>Fit to Screen</button>
+              <div class="legend" aria-label="Legend">
+                <span><i class="lg-dot normal"></i>Normal</span>
+                <span><i class="lg-dot failed"></i>Failed</span>
+                <span><i class="lg-dot affected"></i>Affected</span>
+                <span><i class="lg-dash"></i>Alternate Path</span>
+              </div>
+            </div>
+            <div class="canvas" id="t-canvas">
+              <div class="canvas-hint" data-bind="canvas-hint" hidden></div>
+              <div class="canvas-empty" data-bind="canvas-empty" hidden>
+                <strong>This topology is empty</strong>
+                <span>Drag a PC, switch, router or server from the palette to start.</span>
+              </div>
+            </div>
+          </section>
+
+          <div class="right-col">
+            <aside class="panel info" id="t-info" aria-live="polite"></aside>
+            <aside class="panel analysis" id="t-analysis" aria-label="Failure impact analysis">
+              <div class="an-header">
+                <h2>Failure Impact Analysis</h2>
+                <button class="icon-btn" id="t-analysis-toggle" aria-expanded="true" aria-controls="t-analysis-body"><span data-icon="chevron" data-size="20"></span></button>
+              </div>
+              <div class="an-body" id="t-analysis-body"></div>
+            </aside>
+          </div>
+
+          <section class="panel ranking" aria-label="Component criticality ranking">
+            <div class="rk-head">
+              <h2>Component Criticality Ranking <span data-icon="info" data-size="17" title="Every device and link is failed in turn on a copy of the topology and ranked by the share of clients that lose a required server."></span></h2>
+              <div class="segmented small" role="group" aria-label="Ranking filter">
+                <button data-rank-filter="all" class="active">All Components <span class="rk-n"></span></button>
+                <button data-rank-filter="spof">Only Single Points of Failure <span class="rk-n"></span></button>
+              </div>
+            </div>
+            <div class="rk-scroll">
+              <table class="rk-table">
+                <thead><tr><th>#</th><th>Component</th><th>Type</th><th>Affected Clients</th><th>Impact Score</th><th>Severity</th><th>Single Point of Failure</th></tr></thead>
+                <tbody id="t-ranking-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </main>
+      <main class="page page-topology page-scenarios" id="page-scenarios" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Scenarios</h1>
+            <p>Create, manage and compare failure scenarios to analyse network resilience.</p>
+          </div>
+          <div class="segmented" role="tablist" aria-label="Network mode">
+            <button role="tab" data-mode="basic">Basic Network</button>
+            <button role="tab" data-mode="redundant">Redundant Network</button>
+          </div>
+        </div>
+
+        <section class="cards" aria-label="Scenario summary">
+          <article class="card">
+            <span class="card-icon blue" data-icon="doc" data-size="30"></span>
+            <div><div class="card-num" data-bind="s-total">–</div><div class="card-label">Total Scenarios</div><div class="card-sub" data-bind="s-total-sub">&nbsp;</div></div>
+          </article>
+          <article class="card">
+            <span class="card-icon blue" data-icon="scenarios" data-size="30"></span>
+            <div><div class="card-num" data-bind="s-completed">–</div><div class="card-label">Completed</div><div class="card-sub">View results and compare impact</div></div>
+          </article>
+          <article class="card">
+            <span class="card-icon amber-soft" data-icon="clock" data-size="30"></span>
+            <div><div class="card-num" data-bind="s-pending">–</div><div class="card-label">Pending</div><div class="card-sub">Topology changed since last run</div></div>
+          </article>
+          <article class="card">
+            <span class="card-icon blue" data-icon="plus" data-size="30"></span>
+            <div><div class="card-num" data-bind="s-notrun">–</div><div class="card-label">Not Run</div><div class="card-sub">Run to analyse impact</div></div>
+          </article>
+        </section>
+
+        <section class="sc-grid">
+          <aside class="panel sc-list-panel" aria-label="Saved scenarios">
+            <h2 class="sc-h">Saved Scenarios</h2>
+            <button class="btn primary sc-new" id="s-new"><span data-icon="plus" data-size="18"></span>New Scenario</button>
+            <div class="sc-list" id="s-list" role="listbox" aria-label="Saved scenarios"></div>
+          </aside>
+
+          <section class="panel canvas-panel sc-preview">
+            <div class="sc-preview-head">
+              <h2 class="sc-h" id="s-preview-title">Topology</h2>
+              <div class="toolbar sc-toolbar" role="toolbar" aria-label="Preview tools">
+                <button class="tool wide" data-action="layout" title="Auto layout"><span data-icon="layout"></span>Auto Layout</button>
+                <div class="tool-group zoom">
+                  <button class="tool" data-action="zoom-out" title="Zoom out" aria-label="Zoom out"><span data-icon="minus"></span></button>
+                  <span class="zoom-val" data-bind="zoom">100%</span>
+                  <button class="tool" data-action="zoom-in" title="Zoom in" aria-label="Zoom in"><span data-icon="plus"></span></button>
+                </div>
+                <button class="tool wide" data-action="fit" title="Fit to screen"><span data-icon="fit"></span>Fit to Screen</button>
+              </div>
+            </div>
+            <div class="canvas" id="s-canvas">
+              <div class="canvas-hint sc-note" id="s-canvas-note" hidden></div>
+              <div class="canvas-empty" data-bind="canvas-empty" hidden>
+                <strong>This topology is empty</strong>
+                <span>Add devices on the Overview or Topology page.</span>
+              </div>
+            </div>
+          </section>
+
+          <aside class="panel sc-details" id="s-details" aria-live="polite"></aside>
+
+          <section class="panel sc-results" id="s-results" aria-label="Scenario results"></section>
+
+          <aside class="panel sc-compare" aria-label="Scenario comparison">
+            <h2 class="sc-h">Comparison</h2>
+            <label class="sc-label" for="s-compare-select">Compare with</label>
+            <div class="select-wrap"><select id="s-compare-select"></select></div>
+            <div class="sc-compare-body" id="s-compare-body"></div>
+          </aside>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-head"><h3 id="modal-title"></h3><button class="icon-btn subtle" data-close aria-label="Close"><span data-icon="x" data-size="18"></span></button></div>
+      <form id="modal-form" novalidate></form>
+    </div>
+  </div>
+  <div class="toasts" id="toasts" aria-live="assertive"></div>
+
+  <script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>

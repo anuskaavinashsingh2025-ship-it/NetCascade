@@ -1,0 +1,10 @@
+[project]
+name = "netcascade"
+version = "0.1.0"
+description = "Network Dependency Graph for Predictive Failure Impact and Resilience Analysis"
+requires-python = ">=3.10"
+dependencies = ["networkx>=3.2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
