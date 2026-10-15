@@ -1,4 +1,4 @@
-"""Criticality rankings, single points of failure and connectivity."""
+"""Criticality rankings, single points of failure, connectivity and evaluation metrics."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ from flask import Blueprint, request
 from netcascade import (
     can_reach,
     connected_components,
+    evaluation,
     is_connected,
     isolated_devices,
     rank_devices,
@@ -14,6 +15,7 @@ from netcascade import (
     required_pairs,
     single_points_of_failure,
 )
+from netcascade.topologies import list_topologies
 from netcascade.validation import validate_device_type
 
 from ..errors import ApiError, ok
@@ -74,3 +76,41 @@ def connectivity():
         "required_pair_count": len(pairs),
         "unreachable_required_pairs": unreachable,
     })
+
+
+def _repeat() -> int:
+    raw = request.args.get("repeat", "5")
+    try:
+        repeat = int(raw)
+    except ValueError:
+        raise ApiError("'repeat' must be an integer between 1 and 50", 400) from None
+    if not 1 <= repeat <= 50:
+        raise ApiError("'repeat' must be an integer between 1 and 50", 400)
+    return repeat
+
+
+def _summary(report: dict, records: bool) -> dict:
+    return report if records else {k: v for k, v in report.items() if k != "records"}
+
+
+@bp.get("/analysis/evaluation")
+def evaluate_current():
+    """Device vs link failure statistics and execution time for the loaded topology."""
+    repeat = _repeat()
+    records = request.args.get("records", "true").lower() != "false"
+    return ok(_summary(evaluation.evaluate_topology(get_store().network, repeat=repeat), records))
+
+
+@bp.get("/analysis/evaluation/compare")
+def evaluate_compare():
+    """Compare predefined topologies (with vs without redundancy). Uses fresh copies, not the workspace."""
+    raw = request.args.get("topologies", "basic,redundant,campus")
+    names = [n.strip().lower() for n in raw.split(",") if n.strip()]
+    unknown = [n for n in names if n not in list_topologies()]
+    if not names or unknown:
+        raise ApiError(f"Unknown topology {', '.join(unknown) or '(none)'}. Available: {', '.join(list_topologies())}", 404)
+    repeat = _repeat()
+    records = request.args.get("records", "false").lower() == "true"
+    report = evaluation.compare_topologies(dict.fromkeys(names), repeat=repeat)
+    report["topologies"] = [_summary(t, records) for t in report["topologies"]]
+    return ok(report)

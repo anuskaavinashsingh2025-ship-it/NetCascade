@@ -230,3 +230,85 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_OUT
     for p in generate_all(out):
         print(f"wrote {p}")
+
+
+# ----------------------------------------------------------------- evaluation
+SERIES = ["#2a78d6", "#eb6834", "#1baf7a"]   # categorical slots 1-3, fixed order
+GRID = "#e1e0d9"
+
+
+def _style_axis(ax, ylabel: str) -> None:
+    ax.set_facecolor(SURFACE)
+    for side in ("top", "right", "left"):
+        ax.spines[side].set_visible(False)
+    ax.spines["bottom"].set_color(EDGE)
+    ax.tick_params(colors=INK_2, labelsize=9, length=0)
+    ax.yaxis.grid(True, color=GRID, lw=0.8)
+    ax.set_axisbelow(True)
+    ax.set_ylabel(ylabel, color=MUTED, fontsize=9)
+
+
+def _bar_labels(ax, bars, fmt) -> None:
+    for b in bars:
+        ax.annotate(fmt(b.get_height()), (b.get_x() + b.get_width() / 2, b.get_height()),
+                    xytext=(0, 3), textcoords="offset points", ha="center", va="bottom", fontsize=8.5, color=INK_2)
+
+
+def draw_evaluation(report: dict, out_dir: str | Path) -> list[Path]:
+    """Summary chart (impact, single points of failure, analysis time) and shared-component chart."""
+    import numpy as np
+
+    out_dir = Path(out_dir)
+    tops = report["topologies"]
+    names = [t["name"].title() for t in tops]
+    x = np.arange(len(tops))
+    w = 0.36
+
+    fig, axes = plt.subplots(1, 3, figsize=(14, 4.6), facecolor=SURFACE)
+    panels = [
+        ("Mean impact of one failure", "Impact score (% of clients)", "mean_impact", lambda v: f"{v:.1f}"),
+        ("Single points of failure", "% of components that are SPOFs", "spof_share", lambda v: f"{v:.0f}%"),
+    ]
+    for ax, (title, ylabel, key, fmt) in zip(axes[:2], panels):
+        dev = [t["device_failures"][key] for t in tops]
+        lnk = [t["link_failures"][key] for t in tops]
+        _bar_labels(ax, ax.bar(x - w / 2, dev, w, color=SERIES[0], label="Device failures", edgecolor=SURFACE, linewidth=2), fmt)
+        _bar_labels(ax, ax.bar(x + w / 2, lnk, w, color=SERIES[1], label="Link failures", edgecolor=SURFACE, linewidth=2), fmt)
+        ax.set_xticks(x, names)
+        ax.set_ylim(0, 110)
+        _style_axis(ax, ylabel)
+        ax.set_title(title, loc="left", fontsize=11, color=INK)
+    ax = axes[2]
+    ms = [t["timing"]["mean_ms"] for t in tops]
+    _bar_labels(ax, ax.bar(x, ms, 0.5, color=SERIES[0], edgecolor=SURFACE, linewidth=2), lambda v: f"{v:.2f} ms")
+    ax.set_xticks(x, [f"{n}\n{t['devices']} dev · {t['links']} links" for n, t in zip(names, tops)])
+    ax.set_ylim(0, max(ms) * 1.3 if ms and max(ms) > 0 else 1)
+    _style_axis(ax, "Median time per failure analysis (ms)")
+    ax.set_title("Execution time per failure scenario", loc="left", fontsize=11, color=INK)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper right", ncol=2, frameon=False, fontsize=9, labelcolor=INK_2)
+    fig.suptitle("NetCascade evaluation: device vs link failures across topologies", x=0.01, ha="left",
+                 fontsize=12.5, color=INK, fontweight="bold")
+    fig.text(0.01, 0.005, f"{report['environment']} · median of {report['repeat']} runs per failure", fontsize=8, color=MUTED)
+    fig.tight_layout(rect=(0, 0.03, 1, 0.93))
+    written = [_save(fig, out_dir / "evaluation_summary.png")]
+
+    common = report["common_failures"]
+    if common:
+        present = [t["name"] for t in tops if any(t["name"] in c["impact"] for c in common)]
+        fig, ax = plt.subplots(figsize=(max(8, len(common) * 0.9), 4.6), facecolor=SURFACE)
+        cx = np.arange(len(common))
+        bw = 0.8 / len(present)
+        for i, n in enumerate(present):
+            vals = [c["impact"].get(n, {}).get("impact_score", np.nan) for c in common]
+            bars = ax.bar(cx - 0.4 + bw * (i + 0.5), vals, bw, color=SERIES[i % len(SERIES)], label=n.title(),
+                          edgecolor=SURFACE, linewidth=2)
+            _bar_labels(ax, [b for b, v in zip(bars, vals) if v == v], lambda v: f"{v:.0f}")
+        ax.set_xticks(cx, [c["label"] for c in common], rotation=0, fontsize=8.5)
+        ax.set_ylim(0, 112)
+        _style_axis(ax, "Impact score (% of clients)")
+        ax.legend(frameon=False, fontsize=9, labelcolor=INK_2, loc="lower right", bbox_to_anchor=(1, 1.0), ncol=len(present))
+        ax.set_title("Same component, different topology: impact of its failure", loc="left", fontsize=11.5, color=INK)
+        fig.tight_layout()
+        written.append(_save(fig, out_dir / "evaluation_common_failures.png"))
+    return written

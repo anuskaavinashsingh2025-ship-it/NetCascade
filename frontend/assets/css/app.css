@@ -615,3 +615,5 @@ button.chip:hover { border-color: var(--primary); color: var(--primary); backgro
   .sc-results-grid { grid-template-columns: minmax(0, 1fr); }
   .sc-list { max-height: 260px; }
 }
+
+.an-time { display: block; margin-top: 3px; font-size: 11.5px; color: var(--muted); }

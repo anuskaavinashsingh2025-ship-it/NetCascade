@@ -1,0 +1,1629 @@
+{
+  "generated_at": "2026-10-15T16:54:24+00:00",
+  "repeat": 20,
+  "environment": "Python 3.14.0 on Darwin arm64",
+  "topologies": [
+    {
+      "name": "basic",
+      "devices": 6,
+      "links": 5,
+      "clients": 3,
+      "servers": 1,
+      "device_failures": {
+        "count": 6,
+        "mean_impact": 66.67,
+        "median_impact": 66.66,
+        "max_impact": 100.0,
+        "severity_counts": {
+          "Low": 0,
+          "Medium": 3,
+          "High": 0,
+          "Critical": 3
+        },
+        "single_points_of_failure": 3,
+        "spof_share": 50.0,
+        "mean_lost_pairs": 2.0,
+        "mean_ms": 0.0404,
+        "max_ms": 0.0442
+      },
+      "link_failures": {
+        "count": 5,
+        "mean_impact": 60.0,
+        "median_impact": 33.33,
+        "max_impact": 100.0,
+        "severity_counts": {
+          "Low": 0,
+          "Medium": 3,
+          "High": 0,
+          "Critical": 2
+        },
+        "single_points_of_failure": 5,
+        "spof_share": 100.0,
+        "mean_lost_pairs": 1.8,
+        "mean_ms": 0.045,
+        "max_ms": 0.0472
+      },
+      "all_failures": {
+        "count": 11,
+        "mean_impact": 63.63,
+        "median_impact": 33.33,
+        "max_impact": 100.0,
+        "severity_counts": {
+          "Low": 0,
+          "Medium": 6,
+          "High": 0,
+          "Critical": 5
+        },
+        "single_points_of_failure": 8,
+        "spof_share": 72.73,
+        "mean_lost_pairs": 1.91,
+        "mean_ms": 0.0425,
+        "max_ms": 0.0472
+      },
+      "single_points_of_failure": {
+        "devices": [
+          "SW1",
+          "R1",
+          "SRV1"
+        ],
+        "links": [
+          "PC1--SW1",
+          "PC2--SW1",
+          "PC3--SW1",
+          "SW1--R1",
+          "R1--SRV1"
+        ]
+      },
+      "timing": {
+        "repeat": 20,
+        "mean_ms": 0.0425,
+        "median_ms": 0.0422,
+        "max_ms": 0.0472,
+        "full_ranking_ms": 0.491
+      },
+      "records": [
+        {
+          "kind": "device",
+          "label": "PC1",
+          "component_type": "pc",
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 3,
+          "lost_pairs": 1,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0442
+        },
+        {
+          "kind": "device",
+          "label": "PC2",
+          "component_type": "pc",
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 3,
+          "lost_pairs": 1,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0422
+        },
+        {
+          "kind": "device",
+          "label": "PC3",
+          "component_type": "pc",
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 3,
+          "lost_pairs": 1,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0421
+        },
+        {
+          "kind": "device",
+          "label": "SW1",
+          "component_type": "switch",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 3,
+          "total_clients": 3,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0406
+        },
+        {
+          "kind": "device",
+          "label": "R1",
+          "component_type": "router",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 3,
+          "total_clients": 3,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.041
+        },
+        {
+          "kind": "device",
+          "label": "SRV1",
+          "component_type": "server",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 3,
+          "total_clients": 3,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0322
+        },
+        {
+          "kind": "link",
+          "label": "PC1--SW1",
+          "component_type": "link",
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 3,
+          "lost_pairs": 1,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0472
+        },
+        {
+          "kind": "link",
+          "label": "PC2--SW1",
+          "component_type": "link",
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 3,
+          "lost_pairs": 1,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0467
+        },
+        {
+          "kind": "link",
+          "label": "PC3--SW1",
+          "component_type": "link",
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 3,
+          "lost_pairs": 1,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0467
+        },
+        {
+          "kind": "link",
+          "label": "SW1--R1",
+          "component_type": "link",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 3,
+          "total_clients": 3,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0429
+        },
+        {
+          "kind": "link",
+          "label": "R1--SRV1",
+          "component_type": "link",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 3,
+          "total_clients": 3,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0413
+        }
+      ]
+    },
+    {
+      "name": "redundant",
+      "devices": 10,
+      "links": 14,
+      "clients": 4,
+      "servers": 2,
+      "device_failures": {
+        "count": 10,
+        "mean_impact": 40.0,
+        "median_impact": 25.0,
+        "max_impact": 100.0,
+        "severity_counts": {
+          "Low": 2,
+          "Medium": 4,
+          "High": 2,
+          "Critical": 2
+        },
+        "single_points_of_failure": 4,
+        "spof_share": 40.0,
+        "mean_lost_pairs": 2.4,
+        "mean_ms": 0.083,
+        "max_ms": 0.1038
+      },
+      "link_failures": {
+        "count": 14,
+        "mean_impact": 7.14,
+        "median_impact": 0.0,
+        "max_impact": 25.0,
+        "severity_counts": {
+          "Low": 10,
+          "Medium": 4,
+          "High": 0,
+          "Critical": 0
+        },
+        "single_points_of_failure": 4,
+        "spof_share": 28.57,
+        "mean_lost_pairs": 0.57,
+        "mean_ms": 0.0949,
+        "max_ms": 0.1023
+      },
+      "all_failures": {
+        "count": 24,
+        "mean_impact": 20.83,
+        "median_impact": 12.5,
+        "max_impact": 100.0,
+        "severity_counts": {
+          "Low": 12,
+          "Medium": 8,
+          "High": 2,
+          "Critical": 2
+        },
+        "single_points_of_failure": 8,
+        "spof_share": 33.33,
+        "mean_lost_pairs": 1.33,
+        "mean_ms": 0.0899,
+        "max_ms": 0.1038
+      },
+      "single_points_of_failure": {
+        "devices": [
+          "SW1",
+          "SW2",
+          "SRV1",
+          "SRV2"
+        ],
+        "links": [
+          "PC1--SW1",
+          "PC2--SW1",
+          "PC3--SW2",
+          "PC4--SW2"
+        ]
+      },
+      "timing": {
+        "repeat": 20,
+        "mean_ms": 0.0899,
+        "median_ms": 0.0905,
+        "max_ms": 0.1038,
+        "full_ranking_ms": 2.235
+      },
+      "records": [
+        {
+          "kind": "device",
+          "label": "PC1",
+          "component_type": "pc",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 4,
+          "lost_pairs": 2,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0821
+        },
+        {
+          "kind": "device",
+          "label": "PC2",
+          "component_type": "pc",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 4,
+          "lost_pairs": 2,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.081
+        },
+        {
+          "kind": "device",
+          "label": "PC3",
+          "component_type": "pc",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 4,
+          "lost_pairs": 2,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0815
+        },
+        {
+          "kind": "device",
+          "label": "PC4",
+          "component_type": "pc",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 4,
+          "lost_pairs": 2,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0811
+        },
+        {
+          "kind": "device",
+          "label": "SW1",
+          "component_type": "switch",
+          "impact_score": 50.0,
+          "severity": "High",
+          "affected_clients": 2,
+          "total_clients": 4,
+          "lost_pairs": 4,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0816
+        },
+        {
+          "kind": "device",
+          "label": "SW2",
+          "component_type": "switch",
+          "impact_score": 50.0,
+          "severity": "High",
+          "affected_clients": 2,
+          "total_clients": 4,
+          "lost_pairs": 4,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0823
+        },
+        {
+          "kind": "device",
+          "label": "R1",
+          "component_type": "router",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 8,
+          "single_point_of_failure": false,
+          "execution_ms": 0.1038
+        },
+        {
+          "kind": "device",
+          "label": "R2",
+          "component_type": "router",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0896
+        },
+        {
+          "kind": "device",
+          "label": "SRV1",
+          "component_type": "server",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 4,
+          "total_clients": 4,
+          "lost_pairs": 4,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0735
+        },
+        {
+          "kind": "device",
+          "label": "SRV2",
+          "component_type": "server",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 4,
+          "total_clients": 4,
+          "lost_pairs": 4,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.074
+        },
+        {
+          "kind": "link",
+          "label": "PC1--SW1",
+          "component_type": "link",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 4,
+          "lost_pairs": 2,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0895
+        },
+        {
+          "kind": "link",
+          "label": "PC2--SW1",
+          "component_type": "link",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 4,
+          "lost_pairs": 2,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0898
+        },
+        {
+          "kind": "link",
+          "label": "PC3--SW2",
+          "component_type": "link",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 4,
+          "lost_pairs": 2,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0912
+        },
+        {
+          "kind": "link",
+          "label": "PC4--SW2",
+          "component_type": "link",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 1,
+          "total_clients": 4,
+          "lost_pairs": 2,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.0893
+        },
+        {
+          "kind": "link",
+          "label": "SW1--SW2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0939
+        },
+        {
+          "kind": "link",
+          "label": "SW1--R1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 4,
+          "single_point_of_failure": false,
+          "execution_ms": 0.1001
+        },
+        {
+          "kind": "link",
+          "label": "SW1--R2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0937
+        },
+        {
+          "kind": "link",
+          "label": "SW2--R1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 4,
+          "single_point_of_failure": false,
+          "execution_ms": 0.1023
+        },
+        {
+          "kind": "link",
+          "label": "SW2--R2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0944
+        },
+        {
+          "kind": "link",
+          "label": "R1--R2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.094
+        },
+        {
+          "kind": "link",
+          "label": "R1--SRV1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 4,
+          "single_point_of_failure": false,
+          "execution_ms": 0.1021
+        },
+        {
+          "kind": "link",
+          "label": "R1--SRV2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 4,
+          "single_point_of_failure": false,
+          "execution_ms": 0.1005
+        },
+        {
+          "kind": "link",
+          "label": "R2--SRV1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0943
+        },
+        {
+          "kind": "link",
+          "label": "R2--SRV2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 4,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.0932
+        }
+      ]
+    },
+    {
+      "name": "campus",
+      "devices": 23,
+      "links": 34,
+      "clients": 8,
+      "servers": 3,
+      "device_failures": {
+        "count": 23,
+        "mean_impact": 26.09,
+        "median_impact": 12.5,
+        "max_impact": 100.0,
+        "severity_counts": {
+          "Low": 15,
+          "Medium": 4,
+          "High": 0,
+          "Critical": 4
+        },
+        "single_points_of_failure": 8,
+        "spof_share": 34.78,
+        "mean_lost_pairs": 4.17,
+        "mean_ms": 0.2663,
+        "max_ms": 0.3421
+      },
+      "link_failures": {
+        "count": 34,
+        "mean_impact": 11.76,
+        "median_impact": 0.0,
+        "max_impact": 100.0,
+        "severity_counts": {
+          "Low": 31,
+          "Medium": 0,
+          "High": 0,
+          "Critical": 3
+        },
+        "single_points_of_failure": 11,
+        "spof_share": 32.35,
+        "mean_lost_pairs": 1.41,
+        "mean_ms": 0.2957,
+        "max_ms": 0.3582
+      },
+      "all_failures": {
+        "count": 57,
+        "mean_impact": 17.54,
+        "median_impact": 0.0,
+        "max_impact": 100.0,
+        "severity_counts": {
+          "Low": 46,
+          "Medium": 4,
+          "High": 0,
+          "Critical": 7
+        },
+        "single_points_of_failure": 19,
+        "spof_share": 33.33,
+        "mean_lost_pairs": 2.53,
+        "mean_ms": 0.2838,
+        "max_ms": 0.3582
+      },
+      "single_points_of_failure": {
+        "devices": [
+          "ACC-A1",
+          "ACC-A2",
+          "ACC-B1",
+          "ACC-B2",
+          "DC-SW",
+          "SRV-WEB",
+          "SRV-DB",
+          "SRV-FILE"
+        ],
+        "links": [
+          "ACC-A1--PC-A1-1",
+          "ACC-A1--PC-A1-2",
+          "ACC-A2--PC-A2-1",
+          "ACC-A2--PC-A2-2",
+          "ACC-B1--PC-B1-1",
+          "ACC-B1--PC-B1-2",
+          "ACC-B2--PC-B2-1",
+          "ACC-B2--PC-B2-2",
+          "DC-SW--SRV-WEB",
+          "DC-SW--SRV-DB",
+          "DC-SW--SRV-FILE"
+        ]
+      },
+      "timing": {
+        "repeat": 20,
+        "mean_ms": 0.2838,
+        "median_ms": 0.2858,
+        "max_ms": 0.3582,
+        "full_ranking_ms": 16.441
+      },
+      "records": [
+        {
+          "kind": "device",
+          "label": "CORE1",
+          "component_type": "router",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 24,
+          "single_point_of_failure": false,
+          "execution_ms": 0.3421
+        },
+        {
+          "kind": "device",
+          "label": "CORE2",
+          "component_type": "router",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.276
+        },
+        {
+          "kind": "device",
+          "label": "EDGE",
+          "component_type": "router",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.277
+        },
+        {
+          "kind": "device",
+          "label": "DIST-A1",
+          "component_type": "switch",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 12,
+          "single_point_of_failure": false,
+          "execution_ms": 0.3121
+        },
+        {
+          "kind": "device",
+          "label": "DIST-A2",
+          "component_type": "switch",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2797
+        },
+        {
+          "kind": "device",
+          "label": "ACC-A1",
+          "component_type": "switch",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 2,
+          "total_clients": 8,
+          "lost_pairs": 6,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2591
+        },
+        {
+          "kind": "device",
+          "label": "PC-A1-1",
+          "component_type": "pc",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2634
+        },
+        {
+          "kind": "device",
+          "label": "PC-A1-2",
+          "component_type": "pc",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2627
+        },
+        {
+          "kind": "device",
+          "label": "ACC-A2",
+          "component_type": "switch",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 2,
+          "total_clients": 8,
+          "lost_pairs": 6,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2581
+        },
+        {
+          "kind": "device",
+          "label": "PC-A2-1",
+          "component_type": "pc",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2609
+        },
+        {
+          "kind": "device",
+          "label": "PC-A2-2",
+          "component_type": "pc",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2628
+        },
+        {
+          "kind": "device",
+          "label": "DIST-B1",
+          "component_type": "switch",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 12,
+          "single_point_of_failure": false,
+          "execution_ms": 0.3132
+        },
+        {
+          "kind": "device",
+          "label": "DIST-B2",
+          "component_type": "switch",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2774
+        },
+        {
+          "kind": "device",
+          "label": "ACC-B1",
+          "component_type": "switch",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 2,
+          "total_clients": 8,
+          "lost_pairs": 6,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2593
+        },
+        {
+          "kind": "device",
+          "label": "PC-B1-1",
+          "component_type": "pc",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.263
+        },
+        {
+          "kind": "device",
+          "label": "PC-B1-2",
+          "component_type": "pc",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2624
+        },
+        {
+          "kind": "device",
+          "label": "ACC-B2",
+          "component_type": "switch",
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "affected_clients": 2,
+          "total_clients": 8,
+          "lost_pairs": 6,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2582
+        },
+        {
+          "kind": "device",
+          "label": "PC-B2-1",
+          "component_type": "pc",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2607
+        },
+        {
+          "kind": "device",
+          "label": "PC-B2-2",
+          "component_type": "pc",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.264
+        },
+        {
+          "kind": "device",
+          "label": "DC-SW",
+          "component_type": "switch",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 8,
+          "total_clients": 8,
+          "lost_pairs": 24,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.207
+        },
+        {
+          "kind": "device",
+          "label": "SRV-WEB",
+          "component_type": "server",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 8,
+          "total_clients": 8,
+          "lost_pairs": 8,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2323
+        },
+        {
+          "kind": "device",
+          "label": "SRV-DB",
+          "component_type": "server",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 8,
+          "total_clients": 8,
+          "lost_pairs": 8,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2378
+        },
+        {
+          "kind": "device",
+          "label": "SRV-FILE",
+          "component_type": "server",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 8,
+          "total_clients": 8,
+          "lost_pairs": 8,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2346
+        },
+        {
+          "kind": "link",
+          "label": "CORE1--CORE2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.295
+        },
+        {
+          "kind": "link",
+          "label": "CORE1--EDGE",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2949
+        },
+        {
+          "kind": "link",
+          "label": "CORE1--DIST-A1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 12,
+          "single_point_of_failure": false,
+          "execution_ms": 0.3238
+        },
+        {
+          "kind": "link",
+          "label": "CORE1--DIST-A2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2954
+        },
+        {
+          "kind": "link",
+          "label": "CORE1--DIST-B1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 12,
+          "single_point_of_failure": false,
+          "execution_ms": 0.3277
+        },
+        {
+          "kind": "link",
+          "label": "CORE1--DIST-B2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2997
+        },
+        {
+          "kind": "link",
+          "label": "CORE1--DC-SW",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 24,
+          "single_point_of_failure": false,
+          "execution_ms": 0.3582
+        },
+        {
+          "kind": "link",
+          "label": "CORE2--EDGE",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2951
+        },
+        {
+          "kind": "link",
+          "label": "CORE2--DIST-A1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2958
+        },
+        {
+          "kind": "link",
+          "label": "CORE2--DIST-A2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2976
+        },
+        {
+          "kind": "link",
+          "label": "CORE2--DIST-B1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2939
+        },
+        {
+          "kind": "link",
+          "label": "CORE2--DIST-B2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2965
+        },
+        {
+          "kind": "link",
+          "label": "CORE2--DC-SW",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2854
+        },
+        {
+          "kind": "link",
+          "label": "DIST-A1--DIST-A2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2848
+        },
+        {
+          "kind": "link",
+          "label": "DIST-A1--ACC-A1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 6,
+          "single_point_of_failure": false,
+          "execution_ms": 0.3007
+        },
+        {
+          "kind": "link",
+          "label": "DIST-A1--ACC-A2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 6,
+          "single_point_of_failure": false,
+          "execution_ms": 0.3083
+        },
+        {
+          "kind": "link",
+          "label": "DIST-A2--ACC-A1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2916
+        },
+        {
+          "kind": "link",
+          "label": "DIST-A2--ACC-A2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2941
+        },
+        {
+          "kind": "link",
+          "label": "ACC-A1--PC-A1-1",
+          "component_type": "link",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.285
+        },
+        {
+          "kind": "link",
+          "label": "ACC-A1--PC-A1-2",
+          "component_type": "link",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2864
+        },
+        {
+          "kind": "link",
+          "label": "ACC-A2--PC-A2-1",
+          "component_type": "link",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2875
+        },
+        {
+          "kind": "link",
+          "label": "ACC-A2--PC-A2-2",
+          "component_type": "link",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2858
+        },
+        {
+          "kind": "link",
+          "label": "DIST-B1--DIST-B2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2975
+        },
+        {
+          "kind": "link",
+          "label": "DIST-B1--ACC-B1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 6,
+          "single_point_of_failure": false,
+          "execution_ms": 0.3137
+        },
+        {
+          "kind": "link",
+          "label": "DIST-B1--ACC-B2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 6,
+          "single_point_of_failure": false,
+          "execution_ms": 0.3129
+        },
+        {
+          "kind": "link",
+          "label": "DIST-B2--ACC-B1",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2978
+        },
+        {
+          "kind": "link",
+          "label": "DIST-B2--ACC-B2",
+          "component_type": "link",
+          "impact_score": 0.0,
+          "severity": "Low",
+          "affected_clients": 0,
+          "total_clients": 8,
+          "lost_pairs": 0,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": false,
+          "execution_ms": 0.2948
+        },
+        {
+          "kind": "link",
+          "label": "ACC-B1--PC-B1-1",
+          "component_type": "link",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2839
+        },
+        {
+          "kind": "link",
+          "label": "ACC-B1--PC-B1-2",
+          "component_type": "link",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.285
+        },
+        {
+          "kind": "link",
+          "label": "ACC-B2--PC-B2-1",
+          "component_type": "link",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.287
+        },
+        {
+          "kind": "link",
+          "label": "ACC-B2--PC-B2-2",
+          "component_type": "link",
+          "impact_score": 12.5,
+          "severity": "Low",
+          "affected_clients": 1,
+          "total_clients": 8,
+          "lost_pairs": 3,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2887
+        },
+        {
+          "kind": "link",
+          "label": "DC-SW--SRV-WEB",
+          "component_type": "link",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 8,
+          "total_clients": 8,
+          "lost_pairs": 8,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2727
+        },
+        {
+          "kind": "link",
+          "label": "DC-SW--SRV-DB",
+          "component_type": "link",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 8,
+          "total_clients": 8,
+          "lost_pairs": 8,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2696
+        },
+        {
+          "kind": "link",
+          "label": "DC-SW--SRV-FILE",
+          "component_type": "link",
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "affected_clients": 8,
+          "total_clients": 8,
+          "lost_pairs": 8,
+          "rerouted_pairs": 0,
+          "single_point_of_failure": true,
+          "execution_ms": 0.2675
+        }
+      ]
+    }
+  ],
+  "common_failures": [
+    {
+      "kind": "device",
+      "label": "PC1",
+      "component_type": "pc",
+      "impact": {
+        "basic": {
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "single_point_of_failure": false
+        },
+        "redundant": {
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "single_point_of_failure": false
+        }
+      }
+    },
+    {
+      "kind": "device",
+      "label": "PC2",
+      "component_type": "pc",
+      "impact": {
+        "basic": {
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "single_point_of_failure": false
+        },
+        "redundant": {
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "single_point_of_failure": false
+        }
+      }
+    },
+    {
+      "kind": "device",
+      "label": "PC3",
+      "component_type": "pc",
+      "impact": {
+        "basic": {
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "single_point_of_failure": false
+        },
+        "redundant": {
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "single_point_of_failure": false
+        }
+      }
+    },
+    {
+      "kind": "device",
+      "label": "R1",
+      "component_type": "router",
+      "impact": {
+        "basic": {
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "single_point_of_failure": true
+        },
+        "redundant": {
+          "impact_score": 0.0,
+          "severity": "Low",
+          "single_point_of_failure": false
+        }
+      }
+    },
+    {
+      "kind": "device",
+      "label": "SRV1",
+      "component_type": "server",
+      "impact": {
+        "basic": {
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "single_point_of_failure": true
+        },
+        "redundant": {
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "single_point_of_failure": true
+        }
+      }
+    },
+    {
+      "kind": "device",
+      "label": "SW1",
+      "component_type": "switch",
+      "impact": {
+        "basic": {
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "single_point_of_failure": true
+        },
+        "redundant": {
+          "impact_score": 50.0,
+          "severity": "High",
+          "single_point_of_failure": true
+        }
+      }
+    },
+    {
+      "kind": "link",
+      "label": "PC1--SW1",
+      "component_type": "link",
+      "impact": {
+        "basic": {
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "single_point_of_failure": true
+        },
+        "redundant": {
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "single_point_of_failure": true
+        }
+      }
+    },
+    {
+      "kind": "link",
+      "label": "PC2--SW1",
+      "component_type": "link",
+      "impact": {
+        "basic": {
+          "impact_score": 33.33,
+          "severity": "Medium",
+          "single_point_of_failure": true
+        },
+        "redundant": {
+          "impact_score": 25.0,
+          "severity": "Medium",
+          "single_point_of_failure": true
+        }
+      }
+    },
+    {
+      "kind": "link",
+      "label": "R1--SRV1",
+      "component_type": "link",
+      "impact": {
+        "basic": {
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "single_point_of_failure": true
+        },
+        "redundant": {
+          "impact_score": 0.0,
+          "severity": "Low",
+          "single_point_of_failure": false
+        }
+      }
+    },
+    {
+      "kind": "link",
+      "label": "SW1--R1",
+      "component_type": "link",
+      "impact": {
+        "basic": {
+          "impact_score": 100.0,
+          "severity": "Critical",
+          "single_point_of_failure": true
+        },
+        "redundant": {
+          "impact_score": 0.0,
+          "severity": "Low",
+          "single_point_of_failure": false
+        }
+      }
+    }
+  ]
+}

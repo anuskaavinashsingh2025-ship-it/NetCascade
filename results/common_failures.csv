@@ -1,0 +1,11 @@
+kind,label,component_type,basic_impact,redundant_impact,campus_impact,basic_spof,redundant_spof,campus_spof
+device,PC1,pc,33.33,25.0,,False,False,
+device,PC2,pc,33.33,25.0,,False,False,
+device,PC3,pc,33.33,25.0,,False,False,
+device,R1,router,100.0,0.0,,True,False,
+device,SRV1,server,100.0,100.0,,True,True,
+device,SW1,switch,100.0,50.0,,True,True,
+link,PC1--SW1,link,33.33,25.0,,True,True,
+link,PC2--SW1,link,33.33,25.0,,True,True,
+link,R1--SRV1,link,100.0,0.0,,True,False,
+link,SW1--R1,link,100.0,0.0,,True,False,

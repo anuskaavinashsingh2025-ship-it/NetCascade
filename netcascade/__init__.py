@@ -26,6 +26,7 @@ from .topologies import (
     redundant_topology,
 )
 from .validation import ValidationError
+from . import evaluation  # noqa: E402  (Phase 7: evaluation metrics)
 
 __all__ = [
     "Device", "DeviceType", "Link", "NetworkGraph", "ValidationError", "PathResult",

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from typing import Any
 
 from flask import Blueprint
@@ -38,10 +39,17 @@ def _run(net: NetworkGraph, scenario: dict[str, Any]) -> FailureResult:
     raise ApiError("'kind' must be 'device' or 'link'", 422)
 
 
-def _record(result: FailureResult) -> dict[str, Any]:
+def timed_run(net: NetworkGraph, scenario: dict[str, Any]) -> tuple[FailureResult, float]:
+    """Run a scenario and measure how long the analysis took, in milliseconds."""
+    start = time.perf_counter()
+    result = _run(net, scenario)
+    return result, round((time.perf_counter() - start) * 1000, 4)
+
+
+def _record(result: FailureResult, ms: float) -> dict[str, Any]:
     store = get_store()
     with store.lock:
-        payload = failure_to_dict(store.network, result)
+        payload = {**failure_to_dict(store.network, result), "execution_ms": ms}
         store.simulation = payload
     return payload
 
@@ -49,13 +57,13 @@ def _record(result: FailureResult) -> dict[str, Any]:
 @bp.post("/simulate/device")
 def simulate_device():
     data = json_body()
-    return ok(_record(_run(get_store().network, {**data, "kind": "device"})))
+    return ok(_record(*timed_run(get_store().network, {**data, "kind": "device"})))
 
 
 @bp.post("/simulate/link")
 def simulate_link():
     data = json_body()
-    return ok(_record(_run(get_store().network, {**data, "kind": "link"})))
+    return ok(_record(*timed_run(get_store().network, {**data, "kind": "link"})))
 
 
 @bp.get("/simulation")
@@ -79,8 +87,9 @@ def compare():
     if not isinstance(scenarios, list) or len(scenarios) != 2:
         raise ApiError("'scenarios' must be a list of exactly two scenarios", 400)
     net = get_store().network
-    a, b = (_run(net, s) for s in scenarios)
-    ra, rb = failure_to_dict(net, a), failure_to_dict(net, b)
+    (a, ms_a), (b, ms_b) = (timed_run(net, s) for s in scenarios)
+    ra = {**failure_to_dict(net, a), "execution_ms": ms_a}
+    rb = {**failure_to_dict(net, b), "execution_ms": ms_b}
 
     key_a, key_b = (a.impact_score, len(a.lost_pairs)), (b.impact_score, len(b.lost_pairs))
     worse = "A" if key_a > key_b else "B" if key_b > key_a else "equal"

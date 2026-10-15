@@ -157,3 +157,28 @@ its last run, and **Target missing** when its device or link is deleted.
 
 Comparison uses `POST /api/simulate/compare`. Scenarios are saved to `data/scenarios.json`
 (`python -m backend --scenarios <file>` to change it). Multiple-device failures are not supported by the engine yet.
+
+---
+
+# Evaluation (proposal §9: Planned Results and Evaluation)
+
+```bash
+python -m netcascade.evaluate                    # basic, redundant, campus · median of 20 runs per failure
+python -m netcascade.evaluate basic redundant --repeat 50
+```
+Prints the tables and writes:
+- `results/evaluation.json`: everything, including per-component records
+- `results/summary.csv`: per topology × failure type (device / link / all): mean, median and max impact, severity counts, SPOF count and share, mean lost pairs, mean/max ms
+- `results/components.csv`: every device and link failure with impact, severity, SPOF flag and execution time
+- `results/common_failures.csv`: the same component failing in different topologies (with vs without redundancy)
+- `images/evaluation_summary.png` and `images/evaluation_common_failures.png`
+
+What it covers:
+- **Execution time per failure scenario.** Median wall-clock time of `simulate_device_failure` / `simulate_link_failure`, plus the time for one full criticality ranking. Live API responses also include `execution_ms`; a single cold call is slower than the benchmark median.
+- **Single-device vs single-link failures.** Separate statistics for each.
+- **With vs without redundant paths.** Basic vs Redundant (vs Campus), including the same components side by side.
+
+API: `GET /api/analysis/evaluation?repeat=5[&records=false]` evaluates the loaded workspace topology.
+`GET /api/analysis/evaluation/compare?topologies=basic,redundant,campus&repeat=5[&records=true]` evaluates fresh predefined topologies.
+
+Note: each PC requires every server by default, so a server failure is always Critical. Set `requires` on PCs to model per-service dependencies.

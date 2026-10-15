@@ -925,6 +925,7 @@ async function resetSim() {
 
 const SEV_CLASS = { Low: "low", Medium: "medium", High: "high", Critical: "critical" };
 const fmtScore = (v) => (Number.isInteger(v) ? `${v}` : v.toFixed(2));
+const fmtMs = (ms) => (ms < 1 ? `${ms.toFixed(3)} ms` : `${ms.toFixed(1)} ms`);
 
 function renderAnalysis() {
   const panel = $("#t-analysis"), body = $("#t-analysis-body");
@@ -951,7 +952,7 @@ function renderAnalysis() {
     alt = `<p class="an-note">No client–server path used ${esc(s.label)}, so nothing needed rerouting.</p>`;
   }
   body.innerHTML = `
-    <div class="an-target">Simulated ${s.kind} failure: <button class="linkish" data-an-goto>${esc(s.kind === "link" ? `${s.component.source} ↔ ${s.component.target}` : s.component)}</button></div>
+    <div class="an-target">Simulated ${s.kind} failure: <button class="linkish" data-an-goto>${esc(s.kind === "link" ? `${s.component.source} ↔ ${s.component.target}` : s.component)}</button>${s.execution_ms != null ? `<span class="an-time" title="Server-side time to analyse this failure">Analysed in ${fmtMs(s.execution_ms)}</span>` : ""}</div>
     <div class="an-metric"><span class="an-ic blue">${icon("users", 22)}</span><div><div class="an-label">Affected Clients</div><div class="an-value sev-text-${sev}">${s.affected_client_count} / ${s.total_clients} (${pct}%)</div></div></div>
     <div class="an-metric"><span class="an-ic orange">${icon("target", 22)}</span><div><div class="an-label">Impact Score</div><div class="an-value sev-text-${sev}">${fmtScore(s.impact_score)} / 100</div></div></div>
     <div class="an-metric"><span class="an-ic red">${icon("alert", 22)}</span><div><div class="an-label">Severity</div><div class="an-value big sev-text-${sev}">${esc(s.severity)}</div></div></div>
@@ -1194,7 +1195,8 @@ function renderScenarioResults() {
     ${m.nodes.map((a, i) => `<tr><th>${esc(a)}</th>${m.reachable[i].map((v, j) => v === null ? `<td class="mx-self" title="${esc(a)}">–</td>`
       : `<td class="${v ? "mx-ok" : "mx-no"}" title="${esc(a)} → ${esc(m.nodes[j])}: ${v ? "reachable" : "not reachable"}">${icon(v ? "check" : "x", 14)}</td>`).join("")}</tr>`).join("")}
   </tbody></table>`;
-  box.innerHTML = head(`<span class="sc-ran">Last run ${esc(fmtTime(sc.last_run_at))}</span>`) + banner + tiles + `
+  const ranText = `Last run ${esc(fmtTime(sc.last_run_at))}${r.execution_ms != null ? ` · analysed in ${fmtMs(r.execution_ms)}` : ""}`;
+  box.innerHTML = head(`<span class="sc-ran">${ranText}</span>`) + banner + tiles + `
     <div class="sc-results-grid">
       <div class="sc-col">
         <h3 class="an-h">Affected Devices <span title="Devices whose state changed in this scenario, with the reason." aria-label="About affected devices">${icon("info", 15)}</span><span class="an-count">${rows.length}</span></h3>

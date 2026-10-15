@@ -14,7 +14,7 @@ from ..errors import ApiError, json_body, ok, require_fields
 from ..scenarios import get_scenarios, now_iso, topology_fingerprint
 from ..serializers import failure_to_dict
 from ..store import get_store
-from .simulation import _run
+from .simulation import timed_run
 
 bp = Blueprint("scenarios", __name__)
 
@@ -240,8 +240,8 @@ def run_scenario(scenario_id: str):
     store = get_store()
     with store.lock:
         net = store.network
-        result = _run(net, dict(rec["target"]))          # Phase 2 simulation on a copy
-        payload = failure_to_dict(net, result)
+        result, ms = timed_run(net, dict(rec["target"]))   # Phase 2 simulation on a copy, timed
+        payload = {**failure_to_dict(net, result), "execution_ms": ms}
         store.simulation = payload                      # also the current simulation on the Topology page
         stored = {**payload, "matrix": reachability_after(net, result.kind, result.component)}
         fp = topology_fingerprint(net)
