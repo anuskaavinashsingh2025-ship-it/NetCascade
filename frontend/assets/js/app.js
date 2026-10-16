@@ -153,6 +153,7 @@ async function refresh({ fit = false, relayout = false } = {}) {
   renderAll();
   if (fit) requestAnimationFrame(() => cv().fit());
   if (state.page === "topology") loadRankings();
+  if (state.page === "scenarios") loadEvaluation();
   if (state.selection?.kind === "device") await loadDetail();
 }
 
@@ -808,6 +809,19 @@ async function runAutoLayout() {
 // ============================================================== simulation
 function simOverlay() { return overlayFrom(state.sim); }
 
+/** Device ids a simulation failed: one for "device", several for "devices", none for "link". */
+function failedDevices(s) {
+  if (!s) return [];
+  if (s.kind === "device") return [s.component];
+  if (s.kind === "devices") return s.component;
+  return [];
+}
+function simTargetText(s) {
+  if (s.kind === "link") return `${s.component.source} ↔ ${s.component.target}`;
+  return failedDevices(s).join(", ");
+}
+const KIND_TEXT = { device: "device failure", link: "link failure", devices: "multiple-device failure" };
+
 function overlayFrom(s) {
   if (!s) return null;
   const altEdges = new Set();
@@ -815,7 +829,7 @@ function overlayFrom(s) {
     p.alternate_path.slice(1).forEach((n, i) => altEdges.add(linkKey(p.alternate_path[i], n)));
   }
   return {
-    failedNode: s.kind === "device" ? s.component : null,
+    failedNodes: new Set(failedDevices(s)),
     failedLink: s.kind === "link" ? linkKey(s.component.source, s.component.target) : null,
     affected: new Set(s.affected_clients),
     cutoff: new Set(s.disconnected_devices),
@@ -827,7 +841,7 @@ function overlayFrom(s) {
 function simStatus(id) {
   const s = state.page === "topology" ? state.sim : null;
   if (!s) return null;
-  if (s.kind === "device" && s.component === id) return { cls: "fail", label: "Failed", note: "Simulated failure" };
+  if (failedDevices(s).includes(id)) return { cls: "fail", label: "Failed", note: "Simulated failure" };
   const lost = s.lost_pairs.filter((p) => p.client === id).map((p) => p.server);
   if (lost.length) return { cls: "warn", label: "Affected", note: `Lost connection to ${lost.join(", ")}` };
   if (s.disconnected_devices.includes(id)) return { cls: "warn", label: "Cut off", note: "Disconnected from the main network" };
@@ -841,9 +855,8 @@ function linkStatus(l) {
   if (s?.kind === "link" && linkKey(s.component.source, s.component.target) === linkKey(l.source, l.target)) {
     return { cls: "fail", label: "Failed", note: "Simulated failure" };
   }
-  if (s?.kind === "device" && (l.source === s.component || l.target === s.component)) {
-    return { cls: "fail", label: "Down", note: `${s.component} has failed` };
-  }
+  const downEnd = failedDevices(s).find((d) => d === l.source || d === l.target);
+  if (downEnd) return { cls: "fail", label: "Down", note: `${downEnd} has failed` };
   if (s && simOverlay().altEdges.has(linkKey(l.source, l.target))) return { cls: "ok", label: "Active", note: "Carries rerouted traffic" };
   return { cls: "ok", label: "Active" };
 }
@@ -952,7 +965,7 @@ function renderAnalysis() {
     alt = `<p class="an-note">No client–server path used ${esc(s.label)}, so nothing needed rerouting.</p>`;
   }
   body.innerHTML = `
-    <div class="an-target">Simulated ${s.kind} failure: <button class="linkish" data-an-goto>${esc(s.kind === "link" ? `${s.component.source} ↔ ${s.component.target}` : s.component)}</button>${s.execution_ms != null ? `<span class="an-time" title="Server-side time to analyse this failure">Analysed in ${fmtMs(s.execution_ms)}</span>` : ""}</div>
+    <div class="an-target">Simulated ${KIND_TEXT[s.kind]}: <button class="linkish" data-an-goto>${esc(simTargetText(s))}</button>${s.execution_ms != null ? `<span class="an-time" title="Server-side time to analyse this failure">Analysed in ${fmtMs(s.execution_ms)}</span>` : ""}</div>
     <div class="an-metric"><span class="an-ic blue">${icon("users", 22)}</span><div><div class="an-label">Affected Clients</div><div class="an-value sev-text-${sev}">${s.affected_client_count} / ${s.total_clients} (${pct}%)</div></div></div>
     <div class="an-metric"><span class="an-ic orange">${icon("target", 22)}</span><div><div class="an-label">Impact Score</div><div class="an-value sev-text-${sev}">${fmtScore(s.impact_score)} / 100</div></div></div>
     <div class="an-metric"><span class="an-ic red">${icon("alert", 22)}</span><div><div class="an-label">Severity</div><div class="an-value big sev-text-${sev}">${esc(s.severity)}</div></div></div>
@@ -962,7 +975,7 @@ function renderAnalysis() {
     ${alt}
     ${s.disconnected_devices.length ? `<h3 class="an-h">Cut Off From Network</h3><div class="chips">${s.disconnected_devices.map((d) => `<button class="chip" data-goto-device="${esc(d)}">${esc(d)}</button>`).join("")}</div>` : ""}`;
   const goto = $("[data-an-goto]", body);
-  goto.addEventListener("click", () => select(s.kind === "device" ? { kind: "device", id: s.component } : { kind: "link", id: s.label }, { center: true }));
+  goto.addEventListener("click", () => select(s.kind === "link" ? { kind: "link", id: s.label } : { kind: "device", id: failedDevices(s)[0] }, { center: true }));
   $$("[data-goto-device]", body).forEach((b) => b.addEventListener("click", () => select({ kind: "device", id: b.dataset.gotoDevice }, { center: true })));
 }
 
@@ -1042,12 +1055,21 @@ function scenarios() { return state.scenarioData?.scenarios || []; }
 function scenarioById(id) { return scenarios().find((s) => s.id === id) || null; }
 function currentScenario() { return scenarioById(state.scenarioSel); }
 function scenarioTargetSel(sc) {
+  if (sc.kind === "devices") return { kind: "devices", ids: sc.target.device_ids };
   return sc.kind === "device" ? { kind: "device", id: sc.target.device_id } : { kind: "link", id: `${sc.target.source}--${sc.target.target}` };
 }
-function scenarioTypeLabel(sc) { return sc.kind === "link" ? "Link Failure" : "Device Failure"; }
-function scenarioShortTarget(sc) { return sc.kind === "link" ? `${sc.target.source} – ${sc.target.target}` : sc.target.device_id; }
+function scenarioTypeLabel(sc) { return { link: "Link Failure", device: "Device Failure", devices: "Multiple-Device Failure" }[sc.kind]; }
+function scenarioKindShort(sc) { return { link: "Link failure", device: "Device failure", devices: "Multi-failure" }[sc.kind]; }
+function scenarioShortTarget(sc) {
+  if (sc.kind === "link") return `${sc.target.source} – ${sc.target.target}`;
+  return sc.kind === "devices" ? sc.target.device_ids.join(", ") : sc.target.device_id;
+}
 function scenarioArt(sc, size = 44) {
   if (sc.kind === "link") return `<span class="sc-link-art">${icon("link", Math.round(size * 0.5))}</span>`;
+  if (sc.kind === "devices") {
+    const first = deviceById(sc.target.device_ids[0]);
+    return `<span class="sc-multi-art">${first ? deviceIcon(first.type, size) : icon("alert", Math.round(size * 0.5))}<span class="sc-multi-n">${sc.target.device_ids.length}</span></span>`;
+  }
   const d = deviceById(sc.target.device_id);
   return d ? deviceIcon(d.type, size) : `<span class="sc-link-art">${icon("alert", Math.round(size * 0.5))}</span>`;
 }
@@ -1058,7 +1080,8 @@ function renderScenarios() {
   const data = state.scenarioData;
   const sm = data?.summary;
   setBind("s-total", "textContent", sm ? sm.total : "–");
-  setBind("s-total-sub", "textContent", sm ? `${plural(sm.by_kind.device, ["device failure", "device failures"])}, ${plural(sm.by_kind.link, ["link failure", "link failures"])}` : " ");
+  setBind("s-total-sub", "textContent", sm ? [plural(sm.by_kind.device, ["device failure", "device failures"]), plural(sm.by_kind.link, ["link failure", "link failures"]),
+    ...(sm.by_kind.devices ? [plural(sm.by_kind.devices, ["multi-failure", "multi-failures"])] : [])].join(", ") : " ");
   setBind("s-completed", "textContent", sm ? sm.completed : "–");
   setBind("s-pending", "textContent", sm ? sm.pending : "–");
   setBind("s-notrun", "textContent", sm ? sm.not_run : "–");
@@ -1092,7 +1115,7 @@ function renderScenarioList() {
     const sev = sc.status === "completed" ? ` · ${sc.result.severity}` : "";
     return `<div class="sc-item${sel ? " selected" : ""}" role="option" aria-selected="${sel}" tabindex="0" data-scenario="${esc(sc.id)}">
       <span class="sc-art">${scenarioArt(sc)}</span>
-      <div class="sc-text"><strong>${esc(sc.name)}</strong><small>${sc.kind === "link" ? "Link" : "Device"} failure • ${esc(scenarioShortTarget(sc))}</small></div>
+      <div class="sc-text"><strong>${esc(sc.name)}</strong><small>${scenarioKindShort(sc)} • ${esc(scenarioShortTarget(sc))}</small></div>
       <span class="sc-status st-${st.cls}${state.running === sc.id ? " spin" : ""}" title="${esc(st.label + sev)}" aria-label="${esc(st.label + sev)}">${icon(st.icon, 20)}</span>
     </div>`;
   }).join("");
@@ -1119,7 +1142,7 @@ function renderScenarioDetails() {
       <div class="sc-field"><div class="sc-label">Scenario Name</div>
         <div class="sc-box sc-name"><span>${esc(sc.name)}</span><button class="icon-btn" data-sc="edit" aria-label="Rename scenario" title="Rename">${icon("pencil", 17)}</button></div></div>
       <div class="sc-field"><div class="sc-label">Type</div><div class="sc-value sc-type">${scenarioArt(sc, 26)}${scenarioTypeLabel(sc)}</div></div>
-      <div class="sc-field"><div class="sc-label">${sc.kind === "link" ? "Target Link" : "Target Device"}</div><div class="sc-value">${esc(sc.target_label)}</div></div>
+      <div class="sc-field"><div class="sc-label">${{ link: "Target Link", device: "Target Device", devices: "Target Devices" }[sc.kind]}</div><div class="sc-value">${esc(sc.target_label)}</div></div>
       <div class="sc-field"><div class="sc-label">Description</div><div class="sc-box sc-desc${sc.description ? "" : " muted"}">${esc(sc.description || "No description")}</div></div>
       <div class="sc-two">
         <div><div class="sc-label">Status</div><div class="sc-value"><span class="status-line"><span class="dot ${st.cls === "info" ? "ok" : st.cls}"></span>${esc(st.label)}</span></div></div>
@@ -1135,14 +1158,15 @@ function affectedRows(sc) {
   const rows = [];
   const typeOf = (id) => TYPE_INFO[deviceById(id)?.type]?.name || "Device";
   const artOf = (id) => (deviceById(id) ? deviceIcon(deviceById(id).type, 22) : "");
-  if (r.kind === "device") rows.push({ art: artOf(r.component), name: r.component, type: typeOf(r.component), cls: "fail", status: "Failed", reason: "Simulated failure" });
+  const failed = new Set(failedDevices(r));
+  if (r.kind !== "link") failed.forEach((d) => rows.push({ art: artOf(d), name: d, type: typeOf(d), cls: "fail", status: "Failed", reason: "Simulated failure" }));
   else rows.push({ art: `<span class="rk-link-ic">${icon("link", 13)}</span>`, name: `${r.component.source} – ${r.component.target}`, type: "Link", cls: "fail", status: "Failed", reason: "Simulated failure" });
-  const servers = [...new Set(r.lost_pairs.map((p) => p.server))].filter((s) => s !== r.component);
+  const servers = [...new Set(r.lost_pairs.map((p) => p.server))].filter((s) => !failed.has(s));
   for (const s of servers) {
     const from = r.lost_pairs.filter((p) => p.server === s).map((p) => p.client);
     rows.push({ art: artOf(s), name: s, type: typeOf(s), cls: "fail", status: "Unreachable", reason: `No route from ${from.join(", ")}` });
   }
-  for (const c of r.affected_clients.filter((c) => c !== r.component)) {
+  for (const c of r.affected_clients.filter((c) => !failed.has(c))) {
     const lost = r.lost_pairs.filter((p) => p.client === c).map((p) => p.server);
     rows.push({ art: artOf(c), name: c, type: typeOf(c), cls: "warn", status: "No connectivity", reason: `Cannot reach ${lost.join(", ")}` });
   }
@@ -1179,7 +1203,7 @@ function renderScenarioResults() {
     <div class="sc-tiles">
       <div class="sc-tile tone-${sev}"><span class="sc-tile-ic">${icon("users", 26)}</span><div><b>${r.affected_client_count} / ${r.total_clients}</b><span>Affected Clients</span><small>${r.affected_client_count === 0 ? "Every client still reaches its servers" : r.affected_client_count === r.total_clients ? "No client can reach every required server" : `${pct}% of clients lost a server`}</small></div></div>
       <div class="sc-tile tone-${sev}"><span class="sc-tile-ic">${icon("target", 26)}</span><div><b>${fmtScore(r.impact_score)} / 100</b><span>Impact Score</span><small>${r.impact_score === 100 ? "Maximum network impact" : r.impact_score === 0 ? "No client impact" : `${pct}% of clients affected`}</small></div></div>
-      <div class="sc-tile tone-${sev}"><span class="sc-tile-ic">${icon("alert", 26)}</span><div><b class="sev-text-${sev}">${esc(r.severity)}</b><span>Severity</span><small>${r.is_single_point_of_failure ? "Single point of failure" : "Not a single point of failure"}</small></div></div>
+      <div class="sc-tile tone-${sev}"><span class="sc-tile-ic">${icon("alert", 26)}</span><div><b class="sev-text-${sev}">${esc(r.severity)}</b><span>Severity</span><small>${r.kind === "devices" ? `Combined failure of ${r.component.length} devices` : r.is_single_point_of_failure ? "Single point of failure" : "Not a single point of failure"}</small></div></div>
       <div class="sc-tile tone-blue"><span class="sc-tile-ic">${icon("link", 26)}</span><div><b>${r.lost_pairs.length}</b><span>Lost Connections</span><small title="${esc(lostText)}">${esc(lostText)}</small></div></div>
     </div>`;
   const rows = affectedRows(sc);
@@ -1247,7 +1271,10 @@ function renderComparison() {
     const d = SEV_RANK[Bv.severity] - SEV_RANK[A.severity];
     return d === 0 ? `<span class="dl same">Same</span>` : `<span class="dl ${d < 0 ? "better" : "worse"}">${d < 0 ? "▼ Less severe" : "▲ More severe"}</span>`;
   };
-  const spofDelta = () => (A.is_single_point_of_failure === Bv.is_single_point_of_failure ? `<span class="dl same">Same</span>`
+  const combined = A.kind === "devices" || Bv.kind === "devices";
+  const spofText = (x) => (x.kind === "devices" ? "n/a" : x.is_single_point_of_failure ? "Yes" : "No");
+  const spofDelta = () => (combined ? `<span class="dl same" title="Not defined for a multiple-device failure">–</span>`
+    : A.is_single_point_of_failure === Bv.is_single_point_of_failure ? `<span class="dl same">Same</span>`
     : `<span class="dl ${Bv.is_single_point_of_failure ? "worse" : "better"}">${Bv.is_single_point_of_failure ? "▲ Becomes SPOF" : "▼ Not a SPOF"}</span>`);
   const verdict = cmp.higher_impact === "equal"
     ? `<div class="sc-verdict same">Both scenarios have the same impact.</div>`
@@ -1261,7 +1288,7 @@ function renderComparison() {
       <tr><td>Severity</td><td><span class="sev sev-${SEV_CLASS[A.severity]}">${A.severity}</span></td><td><span class="sev sev-${SEV_CLASS[Bv.severity]}">${Bv.severity}</span></td><td>${sevDelta()}</td></tr>
       <tr><td>Lost connections</td><td>${A.lost_pairs.length}</td><td>${Bv.lost_pairs.length}</td><td>${delta(A.lost_pairs.length, Bv.lost_pairs.length)}</td></tr>
       <tr><td>Surviving rerouted paths</td><td>${A.alternate_paths.length}</td><td>${Bv.alternate_paths.length}</td><td><span class="dl same">${Bv.alternate_paths.length - A.alternate_paths.length >= 0 ? "+" : ""}${Bv.alternate_paths.length - A.alternate_paths.length}</span></td></tr>
-      <tr><td>Single point of failure</td><td>${A.is_single_point_of_failure ? "Yes" : "No"}</td><td>${Bv.is_single_point_of_failure ? "Yes" : "No"}</td><td>${spofDelta()}</td></tr>
+      <tr><td>Single point of failure</td><td>${spofText(A)}</td><td>${spofText(Bv)}</td><td>${spofDelta()}</td></tr>
     </tbody></table>
     <div class="sc-cmp-legend"><span><b>A</b> ${esc(a.name)}</span><span><b>B</b> ${esc(b.name)}</span></div>
     ${cmp.shared_affected_clients.length ? `<p class="an-note">Affected in both: ${cmp.shared_affected_clients.map(esc).join(", ")}</p>` : ""}`;
@@ -1316,9 +1343,12 @@ function scenarioFormHtml(sc, { create }) {
       <div class="checks sc-kind">
         <label><input type="radio" name="kind" value="device" ${kind === "device" ? "checked" : ""} ${devices.length ? "" : "disabled"}> Device failure</label>
         <label><input type="radio" name="kind" value="link" ${kind === "link" ? "checked" : ""} ${links.length ? "" : "disabled"}> Link failure</label>
-      </div>
-      <div class="hint">Multiple-device failures need backend support that does not exist yet.</div></div>
-    <div class="field"><label for="f-sc-target">Target</label><select id="f-sc-target" name="target"></select></div>` : ""}
+        <label><input type="radio" name="kind" value="devices" ${kind === "devices" ? "checked" : ""} ${devices.length > 1 ? "" : "disabled"}> Multiple devices</label>
+      </div></div>
+    <div class="field" id="f-sc-single"><label for="f-sc-target">Target</label><select id="f-sc-target" name="target"></select></div>
+    <div class="field" id="f-sc-multi" hidden><label>Devices that fail together <span class="hint" id="f-sc-count"></span></label>
+      <div class="checks sc-multi-checks">${devices.map((d) => `<label><input type="checkbox" name="multi" value="${esc(d.id)}"> ${esc(d.id)} <span class="hint">(${TYPE_INFO[d.type].name})</span></label>`).join("")}</div>
+      <div class="hint">Choose at least two.</div></div>` : ""}
     <div class="field"><label for="f-sc-desc">Description</label><textarea id="f-sc-desc" name="description" rows="3" maxlength="500" placeholder="What does this scenario test? (optional)">${esc(sc.description || "")}</textarea></div>`;
 }
 
@@ -1333,10 +1363,15 @@ function openNewScenario() {
     onSubmit: async (form) => {
       const kind = form.querySelector('input[name="kind"]:checked')?.value;
       const body = { name: form.name.value, kind, description: form.description.value };
-      const t = form.target.value;
-      if (!t) throw new ApiError("Choose a target.", 0);
-      if (kind === "device") body.device_id = t;
-      else { const l = linkById(t); body.source = l.source; body.target = l.target; }
+      if (kind === "devices") {
+        body.device_ids = $$('input[name="multi"]:checked', form).map((c) => c.value);
+        if (body.device_ids.length < 2) throw new ApiError("Choose at least two devices.", 0);
+      } else {
+        const t = form.target.value;
+        if (!t) throw new ApiError("Choose a target.", 0);
+        if (kind === "device") body.device_id = t;
+        else { const l = linkById(t); body.source = l.source; body.target = l.target; }
+      }
       const created = await api.createScenario(body);
       state.scenarioSel = created.id;
       await refresh();
@@ -1348,6 +1383,8 @@ function openNewScenario() {
   form.name.addEventListener("input", () => (nameTouched = true));
   const fillTargets = () => {
     const kind = form.querySelector('input[name="kind"]:checked')?.value;
+    $("#f-sc-single").hidden = kind === "devices";
+    $("#f-sc-multi").hidden = kind !== "devices";
     form.target.innerHTML = kind === "link"
       ? state.topo.links.map((l) => `<option value="${esc(l.id)}">${esc(l.source)} – ${esc(l.target)}</option>`).join("")
       : state.topo.devices.map((d) => `<option value="${esc(d.id)}">${esc(d.id)} (${TYPE_INFO[d.type].name})</option>`).join("");
@@ -1357,13 +1394,17 @@ function openNewScenario() {
     if (nameTouched) return;
     const kind = form.querySelector('input[name="kind"]:checked')?.value;
     const t = form.target.value;
-    let base = kind === "link" ? `${t.replace("--", "–")} Link Failure` : `${t} Failure`;
+    const picked = $$('input[name="multi"]:checked', form).map((c) => c.value);
+    $("#f-sc-count").textContent = picked.length ? `· ${picked.length} selected` : "";
+    if (kind === "devices" && picked.length < 2) return;
+    let base = kind === "devices" ? `${picked.join(" + ")} Failure` : kind === "link" ? `${t.replace("--", "–")} Link Failure` : `${t} Failure`;
     let name = base, n = 2;
     while (scenarios().some((s) => s.name.toLowerCase() === name.toLowerCase())) name = `${base} ${n++}`;
     form.name.value = name;
   };
   $$('input[name="kind"]', form).forEach((r) => r.addEventListener("change", fillTargets));
   form.target.addEventListener("change", suggest);
+  $$('input[name="multi"]', form).forEach((c) => c.addEventListener("change", suggest));
   fillTargets();
 }
 
@@ -1452,6 +1493,199 @@ function bindScenarios() {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") menuClose(); });
   $("#s-compare-select").addEventListener("change", (e) => { state.compareWith = e.target.value; renderComparison(); });
   $("#s-compare-body").addEventListener("click", (e) => { const b = e.target.closest("[data-sc-run]"); if (b) runScenario(b.dataset.scRun); });
+  $("#ev-refresh").addEventListener("click", () => loadEvaluation({ force: true }));
+}
+
+// =============================================================== evaluation
+const EV_REPEAT = { current: 5, compare: 10 };
+const EV_NETS = ["basic", "redundant"];          // user-facing comparison
+const EV_BENCH = ["basic", "redundant", "campus"]; // campus: execution-time benchmark only
+const evState = { current: null, compare: null, loading: { current: false, compare: false }, measuredAt: null };
+const pctFmt = (v) => `${Number.isInteger(v) ? v : v.toFixed(1)}%`;
+
+function topoKey() {
+  const t = state.topo;
+  return t ? JSON.stringify([t.name, t.source, t.devices, t.links]) : "";
+}
+
+async function loadEvaluation({ force = false } = {}) {
+  if (!state.topo || !$("#ev")) return;
+  const tasks = [];
+  const key = topoKey();
+  if (force || evState.current?.key !== key) {
+    evState.loading.current = true;
+    tasks.push(api.evaluation(EV_REPEAT.current)
+      .then((data) => { if (topoKey() === key) evState.current = { key, data }; })
+      .catch((e) => { evState.current = { key, error: e.message }; })
+      .finally(() => { evState.loading.current = false; }));
+  }
+  if (force || !evState.compare || evState.compare.error) {
+    evState.loading.compare = true;
+    tasks.push(api.evaluationCompare(EV_BENCH, EV_REPEAT.compare)
+      .then((data) => { evState.compare = { data }; })
+      .catch((e) => { evState.compare = { error: e.message }; })
+      .finally(() => { evState.loading.compare = false; }));
+  }
+  if (!tasks.length) return;
+  renderEvaluation();
+  await Promise.all(tasks);
+  evState.measuredAt = new Date();
+  renderEvaluation();
+}
+
+const evBar = (value, color, title, max = 100) =>
+  `<span class="ev-bar" title="${esc(title)}"><span class="ev-fill" style="width:${max ? Math.max(0, Math.min(100, (value / max) * 100)) : 0}%;background:${color}"></span></span>`;
+
+function sevMix(counts, total) {
+  if (!total) return `<span class="muted">–</span>`;
+  const order = ["Critical", "High", "Medium", "Low"];
+  const segs = order.filter((s) => counts[s]).map((s) =>
+    `<span class="ev-seg sev-bg-${SEV_CLASS[s]}" style="flex:${counts[s]}" title="${s}: ${counts[s]} of ${total}"></span>`).join("");
+  const text = order.filter((s) => counts[s]).map((s) => `${counts[s]} ${s}`).join(" · ");
+  return `<div class="ev-mix" aria-label="${esc(text)}">${segs}</div><div class="ev-mix-text">${esc(text)}</div>`;
+}
+
+const EV_COLORS = { device: "#2a78d6", link: "#eb6834" };   // categorical slots 1 and 2, same as the report charts
+const evLegend = `<div class="ev-legend"><span><i style="background:${EV_COLORS.device}"></i>Device failures</span><span><i style="background:${EV_COLORS.link}"></i>Link failures</span></div>`;
+
+function evLoading(title) { return `<h3 class="ev-h">${title}</h3><p class="empty-note">Measuring…</p>`; }
+function evError(title, msg) { return `<h3 class="ev-h">${title}</h3><div class="form-error">${esc(msg)}</div>`; }
+
+function renderEvaluation() {
+  if (!$("#ev")) return;
+  const busy = evState.loading.current || evState.loading.compare;
+  $("#ev-refresh").disabled = busy || !state.topo;
+  $("#ev-meta").textContent = busy ? "Measuring…" : evState.measuredAt
+    ? `Measured ${evState.measuredAt.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })} · median of ${EV_REPEAT.compare} runs per failure`
+    : "";
+  renderEvCurrent();
+  renderEvCompare();
+  renderEvTiming();
+  renderEvCommon();
+  hydrateIcons($("#ev"));
+}
+
+function renderEvCurrent() {
+  const box = $("#ev-current");
+  const title = `This network: ${esc(state.topo ? networkTitle() : "")}${state.topo?.modified ? ' <span class="pill info ev-pill">Edited</span>' : ""}`;
+  const c = evState.current;
+  if (!c || (evState.loading.current && !c.data)) { box.innerHTML = evLoading(title); return; }
+  if (c.error) { box.innerHTML = evError(title, c.error); return; }
+  const d = c.data;
+  if (!d.all_failures.count) { box.innerHTML = `<h3 class="ev-h">${title}</h3><p class="empty-note">Add devices to evaluate this network.</p>`; return; }
+  const all = d.all_failures;
+  const block = (label, kind, st) => `
+    <div class="ev-ft">
+      <div class="ev-ft-head"><span class="ev-key"><i style="background:${EV_COLORS[kind]}"></i>${label}</span><small>${st.count} scenario${st.count === 1 ? "" : "s"}</small></div>
+      ${st.count ? `
+      <div class="ev-ft-row"><span>Mean impact</span><div class="ev-row">${evBar(st.mean_impact, EV_COLORS[kind], `${label}: mean impact ${pctFmt(st.mean_impact)}, max ${pctFmt(st.max_impact)}`)}<span class="ev-num">${pctFmt(st.mean_impact)}</span></div></div>
+      <div class="ev-ft-row"><span>Single points of failure</span><div>${st.single_points_of_failure} of ${st.count} <span class="muted">(${pctFmt(st.spof_share)})</span></div></div>
+      <div class="ev-ft-row"><span>Severity mix</span><div>${sevMix(st.severity_counts, st.count)}</div></div>` : `<p class="empty-note">None in this network.</p>`}
+    </div>`;
+  box.innerHTML = `
+    <h3 class="ev-h">${title}</h3>
+    <div class="ev-kpis">
+      <div><b>${pctFmt(all.mean_impact)}</b><span>Mean impact of one failure</span></div>
+      <div><b>${all.single_points_of_failure} / ${all.count}</b><span>Components that are single points of failure</span></div>
+      <div><b>${fmtMs(d.timing.median_ms)}</b><span>Median time to analyse one failure</span></div>
+      <div><b>${fmtMs(d.timing.full_ranking_ms)}</b><span>Full criticality ranking (${all.count} failures)</span></div>
+    </div>
+    <h4 class="ev-sub">Device vs link failures</h4>
+    ${block("Device failures", "device", d.device_failures)}
+    ${block("Link failures", "link", d.link_failures)}`;
+}
+
+function evPick(name) { return evState.compare?.data?.topologies.find((t) => t.name === name); }
+
+function renderEvCompare() {
+  const box = $("#ev-compare");
+  const title = "Basic vs Redundant network";
+  const c = evState.compare;
+  if (!c || (evState.loading.compare && !c.data)) { box.innerHTML = evLoading(title); return; }
+  if (c.error) { box.innerHTML = evError(title, c.error); return; }
+  const nets = EV_NETS.map(evPick).filter(Boolean);
+  const chart = (heading, key, unitTitle) => `
+    <div class="ev-chart">
+      <h4 class="ev-sub">${heading}</h4>
+      ${nets.map((t) => `
+        <div class="ev-group">
+          <div class="ev-group-label">${esc(MODE_LABEL[t.name] || t.name)}</div>
+          ${["device", "link"].map((k) => {
+            const v = t[`${k}_failures`][key];
+            return `<div class="ev-row">${evBar(v, EV_COLORS[k], `${MODE_LABEL[t.name]} · ${k} failures · ${unitTitle}: ${pctFmt(v)}`)}<span class="ev-num">${pctFmt(v)}</span></div>`;
+          }).join("")}
+        </div>`).join("")}
+    </div>`;
+  const [b, r] = [evPick("basic"), evPick("redundant")];
+  const findings = [];
+  if (b && r) {
+    const line = (label, x, y, unit = "%") => {
+      const better = y < x, same = y === x;
+      return `<li class="${same ? "" : better ? "better" : "worse"}">${label}: <b>${x}${unit}</b> → <b>${y}${unit}</b>${same ? " (no change)" : better ? ` <span class="dl better">▼ ${+(x - y).toFixed(2)}${unit === "%" ? " pts" : ""}</span>` : ` <span class="dl worse">▲ ${+(y - x).toFixed(2)}${unit === "%" ? " pts" : ""}</span>`}</li>`;
+    };
+    findings.push(line("Mean impact of a device failure", b.device_failures.mean_impact, r.device_failures.mean_impact));
+    findings.push(line("Mean impact of a link failure", b.link_failures.mean_impact, r.link_failures.mean_impact));
+    findings.push(line("Share of components that are SPOFs", b.all_failures.spof_share, r.all_failures.spof_share));
+    findings.push(`<li>Critical failures: <b>${b.all_failures.severity_counts.Critical}</b> of ${b.all_failures.count} → <b>${r.all_failures.severity_counts.Critical}</b> of ${r.all_failures.count}</li>`);
+  }
+  box.innerHTML = `
+    <h3 class="ev-h">${title} <span class="ev-note-i" title="Fresh copies of the predefined topologies, so your edits do not affect this comparison." aria-label="About this comparison">${icon("info", 15)}</span></h3>
+    ${evLegend}
+    <div class="ev-charts">${chart("Mean impact of one failure", "mean_impact", "mean impact")}${chart("Components that are single points of failure", "spof_share", "SPOF share")}</div>
+    ${findings.length ? `<h4 class="ev-sub">Effect of adding redundant paths</h4><ul class="ev-findings">${findings.join("")}</ul>` : ""}`;
+}
+
+function renderEvTiming() {
+  const box = $("#ev-timing");
+  const title = "Execution time per failure scenario";
+  const c = evState.compare;
+  if (!c || (evState.loading.compare && !c.data)) { box.innerHTML = evLoading(title); return; }
+  if (c.error) { box.innerHTML = evError(title, c.error); return; }
+  const tops = EV_BENCH.map(evPick).filter(Boolean);
+  const max = Math.max(...tops.map((t) => t.timing.median_ms), 0.001);
+  box.innerHTML = `
+    <h3 class="ev-h">${title}</h3>
+    <div class="ev-timing">
+      ${tops.map((t) => `
+        <div class="ev-trow">
+          <div class="ev-tlabel"><b>${esc(t.name === "campus" ? "Campus benchmark" : MODE_LABEL[t.name] || t.name)}</b><small>${t.devices} devices · ${t.links} links</small></div>
+          <div class="ev-row">${evBar(t.timing.median_ms, "#5b7495", `${t.name}: median ${fmtMs(t.timing.median_ms)} per failure, max ${fmtMs(t.timing.max_ms)}`, max)}<span class="ev-num">${fmtMs(t.timing.median_ms)}</span></div>
+        </div>`).join("")}
+    </div>
+    <table class="ev-table ev-small">
+      <thead><tr><th>Network</th><th>Failures</th><th>Full ranking</th><th>Slowest failure</th></tr></thead>
+      <tbody>${tops.map((t) => `<tr><td>${esc(t.name === "campus" ? "Campus (benchmark)" : MODE_LABEL[t.name])}</td><td>${t.all_failures.count}</td><td>${fmtMs(t.timing.full_ranking_ms)}</td><td>${fmtMs(t.timing.max_ms)}</td></tr>`).join("")}</tbody>
+    </table>
+    <p class="an-note ev-foot">Median of ${evState.compare.data.topologies[0]?.timing.repeat ?? EV_REPEAT.compare} timed runs per failure, measured on this server. A single run on the Topology page includes start-up overhead, so it reads higher.</p>`;
+}
+
+function renderEvCommon() {
+  const box = $("#ev-common");
+  const title = "Same component, different topology";
+  const c = evState.compare;
+  if (!c || (evState.loading.compare && !c.data)) { box.innerHTML = evLoading(title); return; }
+  if (c.error) { box.innerHTML = evError(title, c.error); return; }
+  const rows = c.data.common_failures.filter((f) => EV_NETS.every((n) => f.impact[n]));
+  const cell = (f, n) => {
+    const v = f.impact[n];
+    return `<span class="sev sev-${SEV_CLASS[v.severity]}">${fmtScore(v.impact_score)}%</span>${v.single_point_of_failure ? ' <span class="spof yes" title="Single point of failure">SPOF</span>' : ""}`;
+  };
+  const change = (f) => {
+    const d = Math.round((f.impact.redundant.impact_score - f.impact.basic.impact_score) * 100) / 100;
+    if (d === 0) return `<span class="dl same">No change</span>`;
+    return d < 0 ? `<span class="dl better">▼ ${fmtScore(-d)} pts · more resilient</span>` : `<span class="dl worse">▲ ${fmtScore(d)} pts · less resilient</span>`;
+  };
+  const improved = rows.filter((f) => f.impact.redundant.impact_score < f.impact.basic.impact_score).length;
+  box.innerHTML = `
+    <div class="ev-common-head"><h3 class="ev-h">${title}</h3><span class="ev-meta">${rows.length} components exist in both networks · ${improved} more resilient with redundancy</span></div>
+    ${rows.length ? `<div class="rk-scroll ev-scroll"><table class="rk-table ev-common-table">
+      <thead><tr><th>Component</th><th>Type</th><th>Basic Network</th><th>Redundant Network</th><th>Change with redundancy</th></tr></thead>
+      <tbody>${rows.map((f) => `<tr>
+        <td><span class="rk-comp">${f.kind === "link" ? `<span class="rk-link-ic">${icon("link", 13)}</span>` : deviceIcon(f.component_type, 24)}${esc(f.kind === "link" ? f.label.replace("--", " ↔ ") : f.label)}</span></td>
+        <td>${f.kind === "link" ? "Link" : TYPE_INFO[f.component_type]?.name || f.component_type}</td>
+        <td>${cell(f, "basic")}</td><td>${cell(f, "redundant")}</td><td>${change(f)}</td></tr>`).join("")}</tbody>
+    </table></div>` : `<p class="empty-note">No components exist in both networks.</p>`}
+    <p class="an-note ev-foot">Each PC requires every server by default, so a server failure is Critical in both networks.</p>`;
 }
 
 // ================================================================== search
@@ -1468,9 +1702,9 @@ function searchResults(q) {
     .slice(0, 8)
     .map((l) => ({ group: "Links", sel: { kind: "link", id: l.id }, html: `<span class="sr-link-ic">${icon("link", 18)}</span><div><div class="sr-main">${esc(l.source)} ↔ ${esc(l.target)}</div><div class="sr-sub">${fmtBandwidth(l.bandwidth_mbps)} · ${fmtLatency(l.latency_ms)}</div></div>` }));
   const scen = (state.scenarioData?.scenarios || [])
-    .filter((sc) => [sc.name, sc.target_label, sc.description, sc.kind === "link" ? "link failure" : "device failure"].some((v) => v && v.toLowerCase().includes(q)))
+    .filter((sc) => [sc.name, sc.target_label, sc.description, scenarioKindShort(sc), scenarioTypeLabel(sc)].some((v) => v && v.toLowerCase().includes(q)))
     .slice(0, 6)
-    .map((sc) => ({ group: "Scenarios", scenario: sc.id, html: `<span class="sr-link-ic sr-scen-ic">${icon("scenarios", 18)}</span><div><div class="sr-main">${esc(sc.name)}</div><div class="sr-sub">${sc.kind === "link" ? "Link" : "Device"} failure · ${esc(sc.target_label)} · ${STATUS_INFO[sc.status].label}</div></div>` }));
+    .map((sc) => ({ group: "Scenarios", scenario: sc.id, html: `<span class="sr-link-ic sr-scen-ic">${icon("scenarios", 18)}</span><div><div class="sr-main">${esc(sc.name)}</div><div class="sr-sub">${scenarioKindShort(sc)} · ${esc(sc.target_label)} · ${STATUS_INFO[sc.status].label}</div></div>` }));
   return [...devices, ...links, ...scen];
 }
 
@@ -1517,7 +1751,7 @@ function route() {
   if (prev !== valid && state.topo) { renderCanvas(); renderInfo(); renderScenarios(); }
   requestAnimationFrame(() => { const c = cv(); if (!c.fitted && state.topo) c.fit(); else c._applyView(); });
   if (valid === "topology" && state.topo) loadRankings();
-  if (valid === "scenarios" && prev !== valid && state.topo) loadScenarios();
+  if (valid === "scenarios" && prev !== valid && state.topo) { loadScenarios(); loadEvaluation(); }
 }
 
 async function loadScenarios() {

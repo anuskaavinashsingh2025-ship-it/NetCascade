@@ -7,7 +7,7 @@ from typing import Any
 
 from flask import Blueprint
 
-from netcascade import FailureResult, NetworkGraph, simulate_device_failure, simulate_link_failure
+from netcascade import FailureResult, NetworkGraph, simulate_device_failure, simulate_devices_failure, simulate_link_failure
 
 from ..errors import ApiError, json_body, ok, require_fields
 from ..serializers import failure_to_dict
@@ -23,8 +23,16 @@ def _string(data: dict, field: str) -> str:
     return value
 
 
+def device_id_list(data: dict, field: str = "device_ids") -> list[str]:
+    value = data[field]
+    if not isinstance(value, list) or not all(isinstance(v, str) and v for v in value):
+        raise ApiError(f"'{field}' must be a list of device ids", 422)
+    return value
+
+
 def _run(net: NetworkGraph, scenario: dict[str, Any]) -> FailureResult:
-    """Run one scenario: {"kind": "device", "device_id": ...} or {"kind": "link", "source": ..., "target": ...}."""
+    """Run one scenario: {"kind": "device", "device_id"}, {"kind": "devices", "device_ids": [...]}
+    or {"kind": "link", "source", "target"}."""
     if not isinstance(scenario, dict):
         raise ApiError("Each scenario must be a JSON object", 400)
     kind = scenario.get("kind")
@@ -36,7 +44,10 @@ def _run(net: NetworkGraph, scenario: dict[str, Any]) -> FailureResult:
     if kind == "link":
         require_fields(scenario, "source", "target")
         return simulate_link_failure(net, _string(scenario, "source"), _string(scenario, "target"))
-    raise ApiError("'kind' must be 'device' or 'link'", 422)
+    if kind == "devices":
+        require_fields(scenario, "device_ids")
+        return simulate_devices_failure(net, device_id_list(scenario))
+    raise ApiError("'kind' must be 'device', 'devices' or 'link'", 422)
 
 
 def timed_run(net: NetworkGraph, scenario: dict[str, Any]) -> tuple[FailureResult, float]:
@@ -58,6 +69,13 @@ def _record(result: FailureResult, ms: float) -> dict[str, Any]:
 def simulate_device():
     data = json_body()
     return ok(_record(*timed_run(get_store().network, {**data, "kind": "device"})))
+
+
+@bp.post("/simulate/devices")
+def simulate_devices():
+    """Fail several devices at once: {"device_ids": ["R1", "R2"]}."""
+    data = json_body()
+    return ok(_record(*timed_run(get_store().network, {**data, "kind": "devices"})))
 
 
 @bp.post("/simulate/link")

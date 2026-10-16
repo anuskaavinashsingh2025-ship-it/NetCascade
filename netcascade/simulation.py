@@ -20,7 +20,7 @@ from .graph import NetworkGraph
 from .models import DeviceType
 from .validation import ValidationError
 
-ComponentKind = Literal["device", "link"]
+ComponentKind = Literal["device", "link", "devices"]   # "devices": several devices failing together
 Pair = tuple[str, str]
 
 
@@ -62,7 +62,7 @@ class FailureResult:
     """Outcome of one simulated failure."""
 
     kind: ComponentKind
-    component: str | Pair            # device id, or (source, target) for a link
+    component: str | Pair | tuple[str, ...]   # device id, (source, target) for a link, or device ids for "devices"
     total_clients: int
     affected_clients: list[str]      # PCs that lost at least one required server
     lost_pairs: list[Pair]           # (pc, server) pairs that lost connectivity
@@ -74,7 +74,11 @@ class FailureResult:
 
     @property
     def label(self) -> str:
-        return self.component if self.kind == "device" else f"{self.component[0]}--{self.component[1]}"
+        if self.kind == "device":
+            return self.component
+        if self.kind == "devices":
+            return "+".join(self.component)
+        return f"{self.component[0]}--{self.component[1]}"
 
     @property
     def is_single_point_of_failure(self) -> bool:
@@ -83,6 +87,8 @@ class FailureResult:
         A failed PC losing its own connectivity doesn't count; a switch, router,
         server or link that cuts off other clients does.
         """
+        if self.kind == "devices":
+            return False          # a combination of failures is not a *single* point of failure
         survivors = [c for c in self.affected_clients if not (self.kind == "device" and c == self.component)]
         return bool(survivors)
 
@@ -100,7 +106,8 @@ class FailureResult:
                 lines.append(f"    {a}->{b}: {' -> '.join(path)}")
         if self.disconnected_devices:
             lines.append(f"  Cut off from main network: {', '.join(self.disconnected_devices)}")
-        lines.append(f"  Single point of failure: {'YES' if self.is_single_point_of_failure else 'no'}")
+        if self.kind != "devices":
+            lines.append(f"  Single point of failure: {'YES' if self.is_single_point_of_failure else 'no'}")
         return "\n".join(lines)
 
 
@@ -132,6 +139,27 @@ def simulate_device_failure(net: NetworkGraph, device_id: str) -> FailureResult:
     failed = net.copy()
     failed.remove_device(device_id)
     return _evaluate(net, failed, "device", device_id, failed_nodes={device_id})
+
+
+def simulate_devices_failure(net: NetworkGraph, device_ids: list[str] | tuple[str, ...]) -> FailureResult:
+    """Remove several devices (and their links) from a copy of the graph at the same time.
+
+    Needs at least two distinct devices; use ``simulate_device_failure`` for one.
+    Failed PCs count as affected clients, as in a single device failure.
+    """
+    if not isinstance(device_ids, (list, tuple)):
+        raise ValidationError("device_ids must be a list of device ids")
+    for d in device_ids:
+        if not isinstance(d, str) or not net.has_device(d):
+            raise ValidationError(f"Unknown device {d!r}")
+    if len(set(device_ids)) != len(device_ids):
+        raise ValidationError("device_ids must not contain duplicates")
+    if len(device_ids) < 2:
+        raise ValidationError("A multiple-device failure needs at least two devices")
+    failed = net.copy()
+    for d in device_ids:
+        failed.remove_device(d)
+    return _evaluate(net, failed, "devices", tuple(device_ids), failed_nodes=set(device_ids))
 
 
 def simulate_link_failure(net: NetworkGraph, source: str, target: str) -> FailureResult:

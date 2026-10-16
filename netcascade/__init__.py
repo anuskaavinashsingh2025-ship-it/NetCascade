@@ -48,11 +48,12 @@ from .simulation import (  # noqa: E402
     rank_links,
     required_pairs,
     simulate_device_failure,
+    simulate_devices_failure,
     simulate_link_failure,
     single_points_of_failure,
 )
 
 __all__ += [
     "FailureResult", "Severity", "classify_severity", "impact_score", "rank_devices", "rank_links",
-    "required_pairs", "simulate_device_failure", "simulate_link_failure", "single_points_of_failure",
+    "required_pairs", "simulate_device_failure", "simulate_devices_failure", "simulate_link_failure", "single_points_of_failure",
 ]

@@ -305,6 +305,25 @@
             <div class="sc-compare-body" id="s-compare-body"></div>
           </aside>
         </section>
+
+        <section class="panel ev" id="ev" aria-labelledby="ev-title">
+          <div class="ev-head">
+            <div>
+              <h2 id="ev-title">Evaluation &amp; Resilience</h2>
+              <p>Every device and link is failed in turn on a copy of the topology. Your network is never changed.</p>
+            </div>
+            <div class="ev-head-right">
+              <span class="ev-meta" id="ev-meta" aria-live="polite"></span>
+              <button class="btn" id="ev-refresh" title="Run the measurements again"><span data-icon="restore" data-size="16"></span>Measure again</button>
+            </div>
+          </div>
+          <div class="ev-grid">
+            <article class="ev-card" id="ev-current" aria-live="polite"></article>
+            <article class="ev-card" id="ev-compare" aria-live="polite"></article>
+            <article class="ev-card" id="ev-timing" aria-live="polite"></article>
+            <article class="ev-card ev-wide" id="ev-common" aria-live="polite"></article>
+          </div>
+        </section>
       </main>
     </div>
   </div>

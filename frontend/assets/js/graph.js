@@ -63,7 +63,7 @@ export class TopologyCanvas {
     this.host = host;
     this.h = handlers;   // onSelect(sel), onLinkCreate(a,b), onNodeMoved(id, from, to), onZoom(k), onFailDevice(id), onFailLink(id)
     this.opts = { showIp: false, ...options };
-    this.overlay = null; // { failedNode, failedLink, affected:Set, cutoff:Set, altEdges:Set } from a simulation
+    this.overlay = null; // { failedNodes:Set, failedLink, affected:Set, cutoff:Set, altEdges:Set } from a simulation
     this.fitted = false;
     this.devices = [];
     this.links = [];
@@ -92,6 +92,7 @@ export class TopologyCanvas {
   }
 
   _exists(sel) {
+    if (sel.kind === "devices") return sel.ids.every((id) => this.devices.some((d) => d.id === id));
     return sel.kind === "device" ? this.devices.some((d) => d.id === sel.id) : this.links.some((l) => l.id === sel.id);
   }
 
@@ -127,7 +128,7 @@ export class TopologyCanvas {
       if (sel?.kind === "link" && sel.id === l.id) lc.push("selected");
       if (ov) {
         const k = key(l.source, l.target);
-        if (ov.failedLink === k || ov.failedNode === l.source || ov.failedNode === l.target) lc.push("down");
+        if (ov.failedLink === k || ov.failedNodes.has(l.source) || ov.failedNodes.has(l.target)) lc.push("down");
         else if (ov.altEdges.has(k)) lc.push("alt");
       }
       const g = el("g", { class: lc.join(" "), "data-link": l.id }, this.linkLayer);
@@ -142,10 +143,10 @@ export class TopologyCanvas {
       const p = this.pos[d.id];
       if (!p) continue;
       const classes = ["node", `node-${d.type}`];
-      if (sel?.kind === "device" && sel.id === d.id) classes.push("selected");
+      if ((sel?.kind === "device" && sel.id === d.id) || (sel?.kind === "devices" && sel.ids.includes(d.id))) classes.push("selected");
       if (this.linkSource === d.id) classes.push("link-source");
       if (d._isolated) classes.push("isolated");
-      const failed = ov?.failedNode === d.id;
+      const failed = !!ov?.failedNodes.has(d.id);
       const warn = !failed && (ov?.affected.has(d.id) || ov?.cutoff.has(d.id));
       if (failed) classes.push("failed");
       if (warn) classes.push("affected");

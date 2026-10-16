@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T16:54:24+00:00",
+  "generated_at": "2026-10-16T02:58:23+00:00",
   "repeat": 20,
   "environment": "Python 3.14.0 on Darwin arm64",
   "topologies": [
@@ -23,8 +23,8 @@
         "single_points_of_failure": 3,
         "spof_share": 50.0,
         "mean_lost_pairs": 2.0,
-        "mean_ms": 0.0404,
-        "max_ms": 0.0442
+        "mean_ms": 0.0395,
+        "max_ms": 0.0428
       },
       "link_failures": {
         "count": 5,
@@ -40,8 +40,8 @@
         "single_points_of_failure": 5,
         "spof_share": 100.0,
         "mean_lost_pairs": 1.8,
-        "mean_ms": 0.045,
-        "max_ms": 0.0472
+        "mean_ms": 0.0442,
+        "max_ms": 0.0461
       },
       "all_failures": {
         "count": 11,
@@ -57,8 +57,8 @@
         "single_points_of_failure": 8,
         "spof_share": 72.73,
         "mean_lost_pairs": 1.91,
-        "mean_ms": 0.0425,
-        "max_ms": 0.0472
+        "mean_ms": 0.0416,
+        "max_ms": 0.0461
       },
       "single_points_of_failure": {
         "devices": [
@@ -76,10 +76,10 @@
       },
       "timing": {
         "repeat": 20,
-        "mean_ms": 0.0425,
-        "median_ms": 0.0422,
-        "max_ms": 0.0472,
-        "full_ranking_ms": 0.491
+        "mean_ms": 0.0416,
+        "median_ms": 0.0414,
+        "max_ms": 0.0461,
+        "full_ranking_ms": 0.502
       },
       "records": [
         {
@@ -93,7 +93,7 @@
           "lost_pairs": 1,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0442
+          "execution_ms": 0.0428
         },
         {
           "kind": "device",
@@ -106,7 +106,7 @@
           "lost_pairs": 1,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0422
+          "execution_ms": 0.0414
         },
         {
           "kind": "device",
@@ -119,7 +119,7 @@
           "lost_pairs": 1,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0421
+          "execution_ms": 0.0414
         },
         {
           "kind": "device",
@@ -132,7 +132,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0406
+          "execution_ms": 0.0393
         },
         {
           "kind": "device",
@@ -145,7 +145,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.041
+          "execution_ms": 0.04
         },
         {
           "kind": "device",
@@ -158,7 +158,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0322
+          "execution_ms": 0.032
         },
         {
           "kind": "link",
@@ -171,7 +171,7 @@
           "lost_pairs": 1,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0472
+          "execution_ms": 0.0461
         },
         {
           "kind": "link",
@@ -184,7 +184,7 @@
           "lost_pairs": 1,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0467
+          "execution_ms": 0.0454
         },
         {
           "kind": "link",
@@ -197,7 +197,7 @@
           "lost_pairs": 1,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0467
+          "execution_ms": 0.0461
         },
         {
           "kind": "link",
@@ -210,7 +210,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0429
+          "execution_ms": 0.0423
         },
         {
           "kind": "link",
@@ -223,7 +223,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0413
+          "execution_ms": 0.0409
         }
       ]
     },
@@ -247,8 +247,8 @@
         "single_points_of_failure": 4,
         "spof_share": 40.0,
         "mean_lost_pairs": 2.4,
-        "mean_ms": 0.083,
-        "max_ms": 0.1038
+        "mean_ms": 0.0846,
+        "max_ms": 0.1054
       },
       "link_failures": {
         "count": 14,
@@ -264,8 +264,8 @@
         "single_points_of_failure": 4,
         "spof_share": 28.57,
         "mean_lost_pairs": 0.57,
-        "mean_ms": 0.0949,
-        "max_ms": 0.1023
+        "mean_ms": 0.0987,
+        "max_ms": 0.1067
       },
       "all_failures": {
         "count": 24,
@@ -281,8 +281,8 @@
         "single_points_of_failure": 8,
         "spof_share": 33.33,
         "mean_lost_pairs": 1.33,
-        "mean_ms": 0.0899,
-        "max_ms": 0.1038
+        "mean_ms": 0.0928,
+        "max_ms": 0.1067
       },
       "single_points_of_failure": {
         "devices": [
@@ -300,10 +300,10 @@
       },
       "timing": {
         "repeat": 20,
-        "mean_ms": 0.0899,
-        "median_ms": 0.0905,
-        "max_ms": 0.1038,
-        "full_ranking_ms": 2.235
+        "mean_ms": 0.0928,
+        "median_ms": 0.0938,
+        "max_ms": 0.1067,
+        "full_ranking_ms": 2.289
       },
       "records": [
         {
@@ -317,7 +317,7 @@
           "lost_pairs": 2,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0821
+          "execution_ms": 0.0829
         },
         {
           "kind": "device",
@@ -330,7 +330,7 @@
           "lost_pairs": 2,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.081
+          "execution_ms": 0.0821
         },
         {
           "kind": "device",
@@ -343,7 +343,7 @@
           "lost_pairs": 2,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0815
+          "execution_ms": 0.0844
         },
         {
           "kind": "device",
@@ -356,7 +356,7 @@
           "lost_pairs": 2,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0811
+          "execution_ms": 0.0819
         },
         {
           "kind": "device",
@@ -369,7 +369,7 @@
           "lost_pairs": 4,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0816
+          "execution_ms": 0.0832
         },
         {
           "kind": "device",
@@ -382,7 +382,7 @@
           "lost_pairs": 4,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0823
+          "execution_ms": 0.0845
         },
         {
           "kind": "device",
@@ -395,7 +395,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 8,
           "single_point_of_failure": false,
-          "execution_ms": 0.1038
+          "execution_ms": 0.1054
         },
         {
           "kind": "device",
@@ -408,7 +408,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0896
+          "execution_ms": 0.0912
         },
         {
           "kind": "device",
@@ -421,7 +421,7 @@
           "lost_pairs": 4,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0735
+          "execution_ms": 0.0736
         },
         {
           "kind": "device",
@@ -434,7 +434,7 @@
           "lost_pairs": 4,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.074
+          "execution_ms": 0.0767
         },
         {
           "kind": "link",
@@ -447,7 +447,7 @@
           "lost_pairs": 2,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0895
+          "execution_ms": 0.0931
         },
         {
           "kind": "link",
@@ -460,7 +460,7 @@
           "lost_pairs": 2,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0898
+          "execution_ms": 0.0938
         },
         {
           "kind": "link",
@@ -473,7 +473,7 @@
           "lost_pairs": 2,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0912
+          "execution_ms": 0.0937
         },
         {
           "kind": "link",
@@ -486,7 +486,7 @@
           "lost_pairs": 2,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.0893
+          "execution_ms": 0.0927
         },
         {
           "kind": "link",
@@ -499,7 +499,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0939
+          "execution_ms": 0.0969
         },
         {
           "kind": "link",
@@ -512,7 +512,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 4,
           "single_point_of_failure": false,
-          "execution_ms": 0.1001
+          "execution_ms": 0.1036
         },
         {
           "kind": "link",
@@ -525,7 +525,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0937
+          "execution_ms": 0.0968
         },
         {
           "kind": "link",
@@ -538,7 +538,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 4,
           "single_point_of_failure": false,
-          "execution_ms": 0.1023
+          "execution_ms": 0.1067
         },
         {
           "kind": "link",
@@ -551,7 +551,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0944
+          "execution_ms": 0.0978
         },
         {
           "kind": "link",
@@ -564,7 +564,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.094
+          "execution_ms": 0.0978
         },
         {
           "kind": "link",
@@ -577,7 +577,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 4,
           "single_point_of_failure": false,
-          "execution_ms": 0.1021
+          "execution_ms": 0.1063
         },
         {
           "kind": "link",
@@ -590,7 +590,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 4,
           "single_point_of_failure": false,
-          "execution_ms": 0.1005
+          "execution_ms": 0.1052
         },
         {
           "kind": "link",
@@ -603,7 +603,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0943
+          "execution_ms": 0.0977
         },
         {
           "kind": "link",
@@ -616,7 +616,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.0932
+          "execution_ms": 0.0998
         }
       ]
     },
@@ -640,8 +640,8 @@
         "single_points_of_failure": 8,
         "spof_share": 34.78,
         "mean_lost_pairs": 4.17,
-        "mean_ms": 0.2663,
-        "max_ms": 0.3421
+        "mean_ms": 0.2733,
+        "max_ms": 0.3445
       },
       "link_failures": {
         "count": 34,
@@ -657,8 +657,8 @@
         "single_points_of_failure": 11,
         "spof_share": 32.35,
         "mean_lost_pairs": 1.41,
-        "mean_ms": 0.2957,
-        "max_ms": 0.3582
+        "mean_ms": 0.3006,
+        "max_ms": 0.3644
       },
       "all_failures": {
         "count": 57,
@@ -674,8 +674,8 @@
         "single_points_of_failure": 19,
         "spof_share": 33.33,
         "mean_lost_pairs": 2.53,
-        "mean_ms": 0.2838,
-        "max_ms": 0.3582
+        "mean_ms": 0.2896,
+        "max_ms": 0.3644
       },
       "single_points_of_failure": {
         "devices": [
@@ -704,10 +704,10 @@
       },
       "timing": {
         "repeat": 20,
-        "mean_ms": 0.2838,
-        "median_ms": 0.2858,
-        "max_ms": 0.3582,
-        "full_ranking_ms": 16.441
+        "mean_ms": 0.2896,
+        "median_ms": 0.29,
+        "max_ms": 0.3644,
+        "full_ranking_ms": 16.65
       },
       "records": [
         {
@@ -721,7 +721,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 24,
           "single_point_of_failure": false,
-          "execution_ms": 0.3421
+          "execution_ms": 0.3445
         },
         {
           "kind": "device",
@@ -734,7 +734,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.276
+          "execution_ms": 0.2859
         },
         {
           "kind": "device",
@@ -747,7 +747,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.277
+          "execution_ms": 0.2865
         },
         {
           "kind": "device",
@@ -760,7 +760,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 12,
           "single_point_of_failure": false,
-          "execution_ms": 0.3121
+          "execution_ms": 0.317
         },
         {
           "kind": "device",
@@ -773,7 +773,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2797
+          "execution_ms": 0.2867
         },
         {
           "kind": "device",
@@ -786,7 +786,7 @@
           "lost_pairs": 6,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2591
+          "execution_ms": 0.2667
         },
         {
           "kind": "device",
@@ -799,7 +799,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2634
+          "execution_ms": 0.2693
         },
         {
           "kind": "device",
@@ -812,7 +812,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2627
+          "execution_ms": 0.268
         },
         {
           "kind": "device",
@@ -825,7 +825,7 @@
           "lost_pairs": 6,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2581
+          "execution_ms": 0.2651
         },
         {
           "kind": "device",
@@ -838,7 +838,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2609
+          "execution_ms": 0.2682
         },
         {
           "kind": "device",
@@ -851,7 +851,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2628
+          "execution_ms": 0.2702
         },
         {
           "kind": "device",
@@ -864,7 +864,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 12,
           "single_point_of_failure": false,
-          "execution_ms": 0.3132
+          "execution_ms": 0.3179
         },
         {
           "kind": "device",
@@ -877,7 +877,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2774
+          "execution_ms": 0.2837
         },
         {
           "kind": "device",
@@ -890,7 +890,7 @@
           "lost_pairs": 6,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2593
+          "execution_ms": 0.2637
         },
         {
           "kind": "device",
@@ -903,7 +903,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.263
+          "execution_ms": 0.27
         },
         {
           "kind": "device",
@@ -916,7 +916,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2624
+          "execution_ms": 0.2701
         },
         {
           "kind": "device",
@@ -929,7 +929,7 @@
           "lost_pairs": 6,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2582
+          "execution_ms": 0.2659
         },
         {
           "kind": "device",
@@ -942,7 +942,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2607
+          "execution_ms": 0.2706
         },
         {
           "kind": "device",
@@ -955,7 +955,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.264
+          "execution_ms": 0.2698
         },
         {
           "kind": "device",
@@ -968,7 +968,7 @@
           "lost_pairs": 24,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.207
+          "execution_ms": 0.215
         },
         {
           "kind": "device",
@@ -981,7 +981,7 @@
           "lost_pairs": 8,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2323
+          "execution_ms": 0.2417
         },
         {
           "kind": "device",
@@ -994,7 +994,7 @@
           "lost_pairs": 8,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2378
+          "execution_ms": 0.2456
         },
         {
           "kind": "device",
@@ -1007,7 +1007,7 @@
           "lost_pairs": 8,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2346
+          "execution_ms": 0.2433
         },
         {
           "kind": "link",
@@ -1020,7 +1020,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.295
+          "execution_ms": 0.2881
         },
         {
           "kind": "link",
@@ -1033,7 +1033,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2949
+          "execution_ms": 0.2961
         },
         {
           "kind": "link",
@@ -1046,7 +1046,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 12,
           "single_point_of_failure": false,
-          "execution_ms": 0.3238
+          "execution_ms": 0.3189
         },
         {
           "kind": "link",
@@ -1059,7 +1059,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2954
+          "execution_ms": 0.3021
         },
         {
           "kind": "link",
@@ -1072,7 +1072,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 12,
           "single_point_of_failure": false,
-          "execution_ms": 0.3277
+          "execution_ms": 0.3206
         },
         {
           "kind": "link",
@@ -1085,7 +1085,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2997
+          "execution_ms": 0.2998
         },
         {
           "kind": "link",
@@ -1098,7 +1098,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 24,
           "single_point_of_failure": false,
-          "execution_ms": 0.3582
+          "execution_ms": 0.3644
         },
         {
           "kind": "link",
@@ -1111,7 +1111,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2951
+          "execution_ms": 0.3033
         },
         {
           "kind": "link",
@@ -1124,7 +1124,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2958
+          "execution_ms": 0.3021
         },
         {
           "kind": "link",
@@ -1137,7 +1137,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2976
+          "execution_ms": 0.2995
         },
         {
           "kind": "link",
@@ -1150,7 +1150,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2939
+          "execution_ms": 0.3017
         },
         {
           "kind": "link",
@@ -1163,7 +1163,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2965
+          "execution_ms": 0.3031
         },
         {
           "kind": "link",
@@ -1176,7 +1176,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2854
+          "execution_ms": 0.3019
         },
         {
           "kind": "link",
@@ -1189,7 +1189,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2848
+          "execution_ms": 0.3008
         },
         {
           "kind": "link",
@@ -1202,7 +1202,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 6,
           "single_point_of_failure": false,
-          "execution_ms": 0.3007
+          "execution_ms": 0.3146
         },
         {
           "kind": "link",
@@ -1215,7 +1215,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 6,
           "single_point_of_failure": false,
-          "execution_ms": 0.3083
+          "execution_ms": 0.3154
         },
         {
           "kind": "link",
@@ -1228,7 +1228,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2916
+          "execution_ms": 0.3047
         },
         {
           "kind": "link",
@@ -1241,7 +1241,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2941
+          "execution_ms": 0.3016
         },
         {
           "kind": "link",
@@ -1254,7 +1254,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.285
+          "execution_ms": 0.2933
         },
         {
           "kind": "link",
@@ -1267,7 +1267,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2864
+          "execution_ms": 0.2897
         },
         {
           "kind": "link",
@@ -1280,7 +1280,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2875
+          "execution_ms": 0.2896
         },
         {
           "kind": "link",
@@ -1293,7 +1293,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2858
+          "execution_ms": 0.2899
         },
         {
           "kind": "link",
@@ -1306,7 +1306,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2975
+          "execution_ms": 0.301
         },
         {
           "kind": "link",
@@ -1319,7 +1319,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 6,
           "single_point_of_failure": false,
-          "execution_ms": 0.3137
+          "execution_ms": 0.3163
         },
         {
           "kind": "link",
@@ -1332,7 +1332,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 6,
           "single_point_of_failure": false,
-          "execution_ms": 0.3129
+          "execution_ms": 0.3173
         },
         {
           "kind": "link",
@@ -1345,7 +1345,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2978
+          "execution_ms": 0.3009
         },
         {
           "kind": "link",
@@ -1358,7 +1358,7 @@
           "lost_pairs": 0,
           "rerouted_pairs": 0,
           "single_point_of_failure": false,
-          "execution_ms": 0.2948
+          "execution_ms": 0.3016
         },
         {
           "kind": "link",
@@ -1371,7 +1371,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2839
+          "execution_ms": 0.2908
         },
         {
           "kind": "link",
@@ -1384,7 +1384,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.285
+          "execution_ms": 0.292
         },
         {
           "kind": "link",
@@ -1397,7 +1397,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.287
+          "execution_ms": 0.29
         },
         {
           "kind": "link",
@@ -1410,7 +1410,7 @@
           "lost_pairs": 3,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2887
+          "execution_ms": 0.2889
         },
         {
           "kind": "link",
@@ -1423,7 +1423,7 @@
           "lost_pairs": 8,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2727
+          "execution_ms": 0.2732
         },
         {
           "kind": "link",
@@ -1436,7 +1436,7 @@
           "lost_pairs": 8,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2696
+          "execution_ms": 0.2725
         },
         {
           "kind": "link",
@@ -1449,7 +1449,7 @@
           "lost_pairs": 8,
           "rerouted_pairs": 0,
           "single_point_of_failure": true,
-          "execution_ms": 0.2675
+          "execution_ms": 0.2741
         }
       ]
     }

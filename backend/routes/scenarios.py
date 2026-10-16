@@ -14,12 +14,12 @@ from ..errors import ApiError, json_body, ok, require_fields
 from ..scenarios import get_scenarios, now_iso, topology_fingerprint
 from ..serializers import failure_to_dict
 from ..store import get_store
-from .simulation import timed_run
+from .simulation import device_id_list, timed_run
 
 bp = Blueprint("scenarios", __name__)
 
 MAX_NAME, MAX_DESC = 80, 500
-CREATE_FIELDS = {"name", "kind", "device_id", "source", "target", "description"}
+CREATE_FIELDS = {"name", "kind", "device_id", "device_ids", "source", "target", "description"}
 UPDATE_FIELDS = {"name", "description"}
 
 
@@ -32,6 +32,8 @@ def topology_key() -> str:
 def _target_exists(net: NetworkGraph, target: dict[str, Any]) -> bool:
     if target["kind"] == "device":
         return net.has_device(target["device_id"])
+    if target["kind"] == "devices":
+        return all(net.has_device(d) for d in target["device_ids"])
     return net.has_device(target["source"]) and net.has_device(target["target"]) and net.has_link(target["source"], target["target"])
 
 
@@ -48,6 +50,8 @@ def _status(rec: dict[str, Any], net: NetworkGraph, fingerprint: str) -> str:
 def _target_label(net: NetworkGraph, target: dict[str, Any]) -> str:
     if target["kind"] == "link":
         return f"{target['source']} – {target['target']}"
+    if target["kind"] == "devices":
+        return ", ".join(target["device_ids"])
     did = target["device_id"]
     if not net.has_device(did):
         return did
@@ -114,6 +118,9 @@ def reachability_after(net: NetworkGraph, kind: str, component: Any) -> dict[str
     failed = net.copy()
     if kind == "device":
         failed.remove_device(component)
+    elif kind == "devices":
+        for d in component:
+            failed.remove_device(d)
     else:
         failed.remove_link(*component)
     nodes = net.device_ids(DeviceType.PC) + net.device_ids(DeviceType.SERVER)
@@ -138,7 +145,7 @@ def _list_payload() -> dict[str, Any]:
             "completed": count("completed"),
             "pending": count("outdated"),
             "not_run": count("not_run", "invalid"),
-            "by_kind": {k: sum(1 for s in items if s["kind"] == k) for k in ("device", "link")},
+            "by_kind": {k: sum(1 for s in items if s["kind"] == k) for k in ("device", "link", "devices")},
         },
     }
 
@@ -178,10 +185,19 @@ def create_scenario():
             raise ApiError(f"Link {a!r} <-> {b!r} does not exist", 404)
         link = next(l for l in net.links() if l.key == frozenset((a, b)))   # stored orientation
         target = {"kind": "link", "source": link.source, "target": link.target}
-    elif kind == "multi_device":
-        raise ApiError("Multiple-device failures are not supported by the simulation engine yet", 422)
+    elif kind == "devices":
+        require_fields(data, "device_ids")
+        ids = device_id_list(data)
+        if len(set(ids)) != len(ids):
+            raise ApiError("'device_ids' must not contain duplicates", 422)
+        if len(ids) < 2:
+            raise ApiError("A multiple-device failure needs at least two devices", 422)
+        missing = [d for d in ids if not net.has_device(d)]
+        if missing:
+            raise ApiError(f"Unknown device {missing[0]!r}", 404)
+        target = {"kind": "devices", "device_ids": ids}
     else:
-        raise ApiError("'kind' must be 'device' or 'link'", 422)
+        raise ApiError("'kind' must be 'device', 'devices' or 'link'", 422)
 
     scenarios = get_scenarios()
     key = topology_key()

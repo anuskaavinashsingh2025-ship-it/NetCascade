@@ -32,3 +32,20 @@ def test_asset_path_traversal_blocked(client):
 
 def test_api_still_json(client):
     assert client.get("/api/health").get_json()["success"] is True
+
+
+def test_scenarios_page_has_evaluation_section(client):
+    html = client.get("/").get_data(as_text=True)
+    assert 'id="ev"' in html and "Evaluation &amp; Resilience" in html
+    for part in ("ev-current", "ev-compare", "ev-timing", "ev-common", "ev-refresh"):
+        assert f'id="{part}"' in html
+    assert "campus" not in html.lower().split('id="page-scenarios"')[1].split("</main>")[0].replace("campus benchmark", "")
+
+
+def test_evaluation_endpoints_used_by_ui_respond(client):
+    js = client.get("/assets/js/api.js").get_data(as_text=True)
+    assert "/analysis/evaluation?repeat=" in js and "/analysis/evaluation/compare?topologies=" in js
+    cur = client.get("/api/analysis/evaluation?repeat=1&records=false").get_json()["data"]
+    assert "records" not in cur and cur["timing"]["median_ms"] > 0
+    cmp = client.get("/api/analysis/evaluation/compare?topologies=basic,redundant,campus&repeat=1").get_json()["data"]
+    assert [t["name"] for t in cmp["topologies"]] == ["basic", "redundant", "campus"]

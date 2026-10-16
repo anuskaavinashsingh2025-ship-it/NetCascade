@@ -21,7 +21,7 @@ def test_seeded_scenarios_are_per_topology_and_not_run(client):
     assert data["topology"] == "basic"
     assert [s["name"] for s in data["scenarios"]] == ["Router Failure", "Switch Failure", "PC1 Link Failure"]
     assert all(s["status"] == "not_run" and s["result"] is None and s["last_run_at"] is None for s in data["scenarios"])
-    assert data["summary"] == {"total": 3, "completed": 0, "pending": 0, "not_run": 3, "by_kind": {"device": 2, "link": 1}}
+    assert data["summary"] == {"total": 3, "completed": 0, "pending": 0, "not_run": 3, "by_kind": {"device": 2, "link": 1, "devices": 0}}
     ok(client.post("/api/topologies/redundant/load"))
     assert names(client) == ["Router R1 Failure", "Switch SW1 Failure", "Uplink SW1–R1 Failure"]
 
@@ -57,6 +57,11 @@ def test_create_device_and_link_scenarios(client):
     ({"name": "x", "kind": "link", "source": "PC1"}, 400),
     ({"name": "x", "kind": "node", "device_id": "R1"}, 422),
     ({"name": "x", "kind": "multi_device", "device_id": "R1"}, 422),
+    ({"name": "x", "kind": "devices", "device_ids": ["R1"]}, 422),
+    ({"name": "x", "kind": "devices", "device_ids": ["R1", "R1"]}, 422),
+    ({"name": "x", "kind": "devices", "device_ids": "R1,SW1"}, 422),
+    ({"name": "x", "kind": "devices", "device_ids": ["R1", "NOPE"]}, 404),
+    ({"name": "x", "kind": "devices"}, 400),
     ({"name": "x", "kind": "device", "device_id": "R1", "description": 5}, 422),
     ({"name": "x", "kind": "device", "device_id": "R1", "extra": 1}, 400),
     ({"name": "router failure", "kind": "device", "device_id": "R1"}, 409),   # case-insensitive duplicate
@@ -174,3 +179,29 @@ def test_corrupt_file_starts_clean(tmp_path):
     path.write_text("{not json")
     c = create_app(config={"SCENARIOS_PATH": str(path)}).test_client()
     assert len(ok(c.get("/api/scenarios"))["scenarios"]) == 3   # reseeded
+
+
+# --------------------------------------------------------- multiple devices
+def test_multi_device_scenario_create_run_and_invalidate(client, store):
+    s = ok(client.post("/api/scenarios", json={"name": "Router and switch", "kind": "devices", "device_ids": ["R1", "SW1"]}), 201)
+    assert s["kind"] == "devices" and s["target"] == {"kind": "devices", "device_ids": ["R1", "SW1"]}
+    assert s["target_label"] == "R1, SW1" and s["status"] == "not_run"
+    assert ok(client.get("/api/scenarios"))["summary"]["by_kind"]["devices"] == 1
+    before = store.network.to_dict()
+    r = ok(client.post(f"/api/scenarios/{s['id']}/run"))["result"]
+    assert r["kind"] == "devices" and r["component"] == ["R1", "SW1"] and r["label"] == "R1+SW1"
+    assert r["impact_score"] == 100.0 and r["is_single_point_of_failure"] is False
+    assert r["matrix"]["reachable"][0] == [None, False, False, False]      # SW1 gone: PCs isolated
+    assert store.network.to_dict() == before
+    copy = ok(client.post(f"/api/scenarios/{s['id']}/copy"), 201)
+    assert copy["target"] == s["target"] and copy["result"] is None
+    ok(client.delete("/api/devices/SW1"))
+    assert ok(client.get(f"/api/scenarios/{s['id']}"))["status"] == "invalid"
+
+
+def test_multi_device_redundant_routers_fail_together(client):
+    ok(client.post("/api/topologies/redundant/load"))
+    s = ok(client.post("/api/scenarios", json={"name": "Both routers", "kind": "devices", "device_ids": ["R1", "R2"]}), 201)
+    r = ok(client.post(f"/api/scenarios/{s['id']}/run"))["result"]
+    assert r["impact_score"] == 100.0 and r["severity"] == "Critical"
+    assert r["disconnected_devices"] == ["SRV1", "SRV2"]

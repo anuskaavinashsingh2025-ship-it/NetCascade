@@ -617,3 +617,84 @@ button.chip:hover { border-color: var(--primary); color: var(--primary); backgro
 }
 
 .an-time { display: block; margin-top: 3px; font-size: 11.5px; color: var(--muted); }
+
+/* ============================================== Evaluation & Resilience */
+.ev { flex: none; padding: 16px 16px 18px; }
+.ev-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.ev-head h2 { font-size: 18px; margin: 0 0 4px; }
+.ev-head p { margin: 0; font-size: 13.5px; color: var(--text-2); }
+.ev-head-right { display: flex; align-items: center; gap: 12px; }
+.ev-meta { font-size: 12.5px; color: var(--muted); }
+.ev-grid { display: grid; gap: 12px; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.25fr) minmax(0, .95fr); }
+.ev-card { border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; min-width: 0; background: #fff; }
+.ev-wide { grid-column: 1 / -1; }
+.ev-h { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; margin: 0 0 12px; }
+.ev-h .ic { color: var(--text-2); }
+.ev-pill { margin: 0; padding: 2px 8px; font-size: 11.5px; }
+.ev-sub { font-size: 12.5px; font-weight: 600; color: var(--text-2); margin: 14px 0 8px; }
+.ev-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.ev-kpis > div { background: var(--surface-2); border: 1px solid #edf1f6; border-radius: 9px; padding: 9px 11px; display: flex; flex-direction: column; gap: 2px; }
+.ev-kpis b { font-size: 18px; }
+.ev-kpis span { font-size: 12px; color: var(--text-2); line-height: 1.35; }
+.ev-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.ev-table th { text-align: left; font-weight: 500; color: var(--text-2); padding: 5px 6px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.ev-table td, .ev-table tbody th { padding: 8px 6px; border-bottom: 1px solid #eef1f6; vertical-align: middle; }
+.ev-table tbody th { font-weight: 600; color: var(--text); }
+.ev-table tbody th small { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; margin-top: 2px; padding-left: 18px; }
+.ev-table td:nth-child(2) { display: flex; align-items: center; gap: 8px; min-width: 120px; }
+.ev-small td:nth-child(2) { display: table-cell; min-width: 0; }
+.ev-key { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.ev-key i, .ev-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.ev-legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-2); margin-bottom: 4px; }
+.ev-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.ev-bar { flex: 1; height: 10px; background: #eef2f7; border-radius: 0 4px 4px 0; overflow: hidden; display: block; min-width: 40px; }
+.ev-fill { display: block; height: 100%; border-radius: 0 4px 4px 0; min-width: 0; }
+.ev-num { font-size: 12.5px; font-weight: 600; color: var(--text); min-width: 54px; text-align: right; font-variant-numeric: tabular-nums; }
+.ev-row { display: flex; align-items: center; gap: 8px; }
+.ev-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.ev-group { margin-bottom: 8px; }
+.ev-group-label { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.ev-group .ev-row + .ev-row { margin-top: 3px; }
+.ev-findings { list-style: none; margin: 0; padding: 0; font-size: 12.5px; display: flex; flex-direction: column; gap: 5px; }
+.ev-findings li { padding-left: 12px; border-left: 3px solid var(--border); line-height: 1.45; }
+.ev-findings li.better { border-left-color: #1f9d48; }
+.ev-findings li.worse { border-left-color: #e03131; }
+.ev-mix { display: flex; gap: 2px; height: 10px; min-width: 90px; border-radius: 3px; overflow: hidden; }
+.ev-seg { display: block; height: 100%; }
+.sev-bg-critical { background: #d03b3b; } .sev-bg-high { background: #ec835a; } .sev-bg-medium { background: #fab219; } .sev-bg-low { background: #0ca30c; }
+.ev-mix-text { font-size: 11px; color: var(--text-2); margin-top: 4px; white-space: nowrap; }
+.ev-timing { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+.ev-trow { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 10px; align-items: center; }
+.ev-tlabel b { display: block; font-size: 12.5px; }
+.ev-tlabel small { font-size: 11.5px; color: var(--muted); }
+.ev-foot { padding-left: 0; margin-top: 10px; font-size: 12px; }
+.ev-common-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.ev-scroll { margin: 0; max-height: 320px; }
+.ev-common-table .sev { min-width: 52px; }
+.ev-common-table .spof { min-width: 0; padding: 1px 6px; font-size: 11px; margin-left: 4px; }
+.ev-common-table td:nth-child(3), .ev-common-table td:nth-child(4) { text-align: left; }
+
+@media (max-width: 1360px) {
+  .ev-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .ev-grid #ev-timing { grid-column: 1 / -1; }
+}
+@media (max-width: 1080px) {
+  .ev-grid { grid-template-columns: minmax(0, 1fr); }
+  .ev-charts { grid-template-columns: minmax(0, 1fr); }
+}
+
+.ev-ft { border: 1px solid #edf1f6; border-radius: 9px; padding: 9px 11px; }
+.ev-ft + .ev-ft { margin-top: 8px; }
+.ev-ft-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; }
+.ev-ft-head small { font-weight: 400; color: var(--muted); font-size: 11.5px; }
+.ev-ft-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; gap: 10px; font-size: 12.5px; padding: 3px 0; }
+.ev-ft-row > span { color: var(--text-2); }
+.ev-ft-row .ev-mix-text { white-space: normal; }
+.ev-small th { white-space: normal; vertical-align: bottom; }
+.ev-small td, .ev-small th { padding-left: 4px; padding-right: 4px; }
+
+/* multiple-device failure */
+.sc-multi-art { position: relative; display: inline-grid; place-items: center; }
+.sc-multi-n { position: absolute; right: -4px; bottom: -2px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--primary); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; border: 2px solid #fff; }
+.sc-multi-checks { max-height: 190px; }
+.field label .hint { display: inline; font-weight: 400; }

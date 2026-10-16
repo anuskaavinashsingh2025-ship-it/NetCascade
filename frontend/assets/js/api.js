@@ -43,6 +43,9 @@ export const api = {
   resetTopology: () => request("POST", "/topology/reset"),
   connectivity: () => request("GET", "/analysis/connectivity"),
   rankings: () => request("GET", "/analysis/rankings"),
+  evaluation: (repeat = 5) => request("GET", `/analysis/evaluation?repeat=${repeat}&records=false`),
+  evaluationCompare: (topologies, repeat = 5) =>
+    request("GET", `/analysis/evaluation/compare?topologies=${topologies.map(enc).join(",")}&repeat=${repeat}`),
 
   simulation: () => request("GET", "/simulation"),
   simulateDevice: (deviceId) => request("POST", "/simulate/device", { device_id: deviceId }),

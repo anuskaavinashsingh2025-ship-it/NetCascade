@@ -64,6 +64,15 @@ def _pair(pc: str, srv: str) -> dict[str, str]:
     return {"client": pc, "server": srv}
 
 
+def component_json(r: FailureResult) -> Any:
+    """Device id, list of device ids (multiple-device failure) or {"source", "target"} for a link."""
+    if r.kind == "device":
+        return r.component
+    if r.kind == "devices":
+        return list(r.component)
+    return {"source": r.component[0], "target": r.component[1]}
+
+
 def failure_to_dict(net: NetworkGraph, r: FailureResult) -> dict[str, Any]:
     """Serialize a Phase 2 FailureResult. ``net`` is the unfailed topology, used for original paths."""
     g = net.graph
@@ -74,7 +83,7 @@ def failure_to_dict(net: NetworkGraph, r: FailureResult) -> dict[str, Any]:
         except nx.NetworkXNoPath:
             return []
 
-    component = r.component if r.kind == "device" else {"source": r.component[0], "target": r.component[1]}
+    component = component_json(r)
     return {
         "kind": r.kind,
         "component": component,
@@ -99,7 +108,7 @@ def failure_to_dict(net: NetworkGraph, r: FailureResult) -> dict[str, Any]:
 
 
 def ranking_entry(r: FailureResult, rank: int) -> dict[str, Any]:
-    component = r.component if r.kind == "device" else {"source": r.component[0], "target": r.component[1]}
+    component = component_json(r)
     return {
         "rank": rank,
         "kind": r.kind,
